@@ -3,7 +3,7 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# Project And classpath files
+# Project And classpath files #
 .classpath
 .project
 .settings/
