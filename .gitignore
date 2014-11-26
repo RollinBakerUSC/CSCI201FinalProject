@@ -4,8 +4,9 @@
 .mtj.tmp/
 
 # Project And classpath files
-*.classpath
-*.project
+.classpath
+.project
+.settings/
 
 # Package Files #
 *.jar
