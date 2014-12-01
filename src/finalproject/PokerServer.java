@@ -39,9 +39,10 @@ public class PokerServer extends Thread{
 				Socket s=ss.accept();
 				System.out.println("Connection from" + s.getInetAddress());
 				ServerThread st = new ServerThread(s);
-				
+				ChatThread ct=new ChatThread(s,st);
 				pokerPlayers.add(st);
 				st.start();
+				ct.start();
 			}
 		}
 		catch (IOException ioe){
@@ -220,7 +221,49 @@ public class PokerServer extends Thread{
 }
 
 
-
+class ChatThread extends Thread
+{
+	private Socket s;
+	public BufferedReader br;
+	public PrintWriter pw;
+	public ServerThread st;
+	public ChatThread(Socket s, ServerThread st){
+		this.s=s;
+		this.st=st;
+		try{
+			br=new BufferedReader(new InputStreamReader(s.getInputStream()));
+			pw = new PrintWriter (s.getOutputStream());
+		}
+		catch(IOException ioe)
+		{
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+	}
+	public void run()
+	{
+		while(true)
+		{
+			try{
+				String line=br.readLine();
+				if(line.contains("Message:"))
+				{
+					String message=line.substring(8,line.length());
+					for(ServerThread client : PokerServer.pokerPlayers)
+					{
+						if (client!=st)
+						{
+							client.pw.println("Message:"+message);
+						}
+					}
+				}
+			}
+			catch(IOException ioe)
+			{
+				System.out.println("ioe: " + ioe.getMessage());
+			}
+		}
+	}
+}
 
 
 class ServerThread extends Thread
