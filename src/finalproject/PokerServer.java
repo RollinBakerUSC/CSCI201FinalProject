@@ -1,4 +1,6 @@
+package finalproject;
 import java.io.BufferedReader;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -41,7 +43,10 @@ public class PokerServer extends Thread{
 				ServerThread st = new ServerThread(s);
 				ChatThread ct=new ChatThread(s,st);
 				pokerPlayers.add(st);
+				//System.out.println("hi");
+				
 				st.start();
+				//st.pw.println("you connected!");
 				ct.start();
 			}
 		}
@@ -297,8 +302,12 @@ class ServerThread extends Thread
 		else
 			started=false;
 		try{
+			
 			br=new BufferedReader(new InputStreamReader(s.getInputStream()));
 			pw = new PrintWriter (s.getOutputStream());
+			System.out.println("hi");
+			pw.println("connected yay");
+			pw.flush();
 		}
 		catch(IOException ioe)
 		{
