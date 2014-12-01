@@ -83,10 +83,10 @@ public class PokerServer extends Thread{
 					
 					
 					Card card1=PokerDeck.deal();//hands out cards
-					String card1String=card1.getValueAsString()+card1.getSuitAsString();
+					String card1String=card1.getValueAsString()+ " " +card1.getSuitAsString();
 					//st.pw.println(card1String);
 					Card card2=PokerDeck.deal();
-					String card2String=card2.getValueAsString()+card2.getSuitAsString();
+					String card2String=card2.getValueAsString()+" " +card2.getSuitAsString();
 					st.pw.println("Hand:"+card1String + " "+card2String);
 					st.pw.flush();
 					}
@@ -209,19 +209,19 @@ public class PokerServer extends Thread{
 					if(PokerServer.rounds==2)//3 cards
 					{
 						Card card1=PokerDeck.deal();//hands out cards
-						 card1String=card1.getValueAsString()+card1.getSuitAsString();
+						 card1String=card1.getValueAsString()+" "+card1.getSuitAsString();
 						//st.pw.println(card1String);
 						Card card2=PokerDeck.deal();
-						 card2String=card2.getValueAsString()+card2.getSuitAsString();
+						 card2String=card2.getValueAsString()+" "+card2.getSuitAsString();
 						//st.pw.println(card2String);
 						Card card3=PokerDeck.deal();
-						card3String = card3.getValueAsString()+card3.getSuitAsString();
+						card3String = card3.getValueAsString()+" "+card3.getSuitAsString();
 						//st.pw.println("Deal3:"+card1String+","+card2String+","+card3String);
 					}
 					else if (PokerServer.rounds==3||PokerServer.rounds==4)
 					{
 						Card card1=PokerDeck.deal();//hands out cards
-						 card1String=card1.getValueAsString()+card1.getSuitAsString();
+						 card1String=card1.getValueAsString()+" "+card1.getSuitAsString();
 						//st.pw.println(card1String);
 
 					}
@@ -235,7 +235,7 @@ public class PokerServer extends Thread{
 					//UPDATE DEALER HERE???
 						if(PokerServer.rounds==2)
 						{
-						st.pw.println("Deal3:"+card1String+","+card2String+","+card3String);
+						st.pw.println("Deal3:"+card1String+" "+card2String+" "+card3String);
 						st.pw.flush();
 						}
 						else if (PokerServer.rounds==3||PokerServer.rounds==4)
@@ -376,10 +376,10 @@ class ServerThread extends Thread
 
 					 if(test==0)
 					 {
-					pw.println(PokerServer.dealer);
-					pw.flush();
-					pw.println("turn is:" + turnOrder);
-					pw.flush();
+					//pw.println(PokerServer.dealer);
+					//pw.flush();
+					//pw.println("turn is:" + turnOrder);
+					//pw.flush();
 					test++;
 					 }
 					//first check if the round is going to end
