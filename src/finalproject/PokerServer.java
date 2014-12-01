@@ -74,6 +74,7 @@ public class PokerServer extends Thread{
 					for(ServerThread st : PokerServer.pokerPlayers)//starts round, hands out cards
 					{
 					st.pw.println("StartRound");//sends signal to a client to start a new round
+					st.pw.flush();
 					PokerServer.part_Players.add(st);//adds client to the vector of participating players for a round
 					st.inRound=true;
 					st.doneBet=false;
@@ -83,6 +84,7 @@ public class PokerServer extends Thread{
 					Card card2=PokerDeck.deal();
 					String card2String=card2.getValueAsString()+card2.getSuitAsString();
 					st.pw.println("Hand:"+card1String + " "+card2String);
+					st.pw.flush();
 					}
 				}
 				
@@ -101,6 +103,7 @@ public class PokerServer extends Thread{
 			{
 				PokerServer.maxBet=0;
 				count=0;
+				System.out.println("do i get here");
 				if(PokerServer.dealer<PokerServer.pokerPlayers.size())//updating the dealer
 				{
 					PokerServer.dealer++;
@@ -114,6 +117,7 @@ public class PokerServer extends Thread{
 				{
 					int maxRank=0;
 					PokerDeck.shuffle();
+					System.out.println("end of round game");
 					for(ServerThread st:PokerServer.part_Players)
 					{
 						st.inRound=false;
@@ -121,6 +125,7 @@ public class PokerServer extends Thread{
 						st.amountBet=0;
 						st.doneBet=false;
 						st.pw.println("Done");
+						st.pw.flush();
 						st.count=0;
 						PokerServer.rounds=1;
 						//insert code for determining winner
@@ -152,10 +157,12 @@ public class PokerServer extends Thread{
 						if(st.Rank.equals(Winners.get(0)))
 						{
 							st.pw.println("Winner:"+(PokerServer.MoneyPot/Winners.size()));
+							st.pw.flush();
 						}
 						else
 						{
 							st.pw.println("Loser");
+							st.pw.flush();
 						}
 					
 					}
@@ -200,10 +207,12 @@ public class PokerServer extends Thread{
 						if(PokerServer.rounds==2)
 						{
 						st.pw.println("Deal3:"+card1String+","+card2String+","+card3String);
+						st.pw.flush();
 						}
 						else if (PokerServer.rounds==3||PokerServer.rounds==4)
 						{
 							st.pw.println("Deal1:"+card1String);
+							st.pw.flush();
 						}
 						
 						
@@ -258,6 +267,7 @@ class ChatThread extends Thread
 						if (client!=st)
 						{
 							client.pw.println("Message:"+message);
+							st.pw.flush();
 						}
 					}
 				}
@@ -293,6 +303,7 @@ class ServerThread extends Thread
 		//handRank=0;
 		
 		turnOrder=PokerServer.turnIndex;//sets your turn order based on order in which you join the server
+		System.out.println("turnOrder is:" + turnOrder);
 		PokerServer.turnIndex=PokerServer.turnIndex+1;//updates the turn index
 		if(PokerServer.pokerPlayers.size()>1)//make sure the game doesn't start until at least 2 players connected
 		{
@@ -319,20 +330,40 @@ class ServerThread extends Thread
 	{
 		try{
 			 PokerServer.count=0;
+			 pw.println("in run of serverthread");
+			 pw.flush();
+			 int tester=0;
+			 int test=0;
 			while(true)
 			{
 				
+				if(tester==0)
+				{
+				System.out.println(inRound);
+				}
+				tester=tester+1;
 				 if (inRound==true)
 				{
 					
+					 if(test==0)
+					 {
+					pw.println(PokerServer.dealer);
+					pw.flush();
+					pw.println("turn is:" + turnOrder);
+					pw.flush();
+					test++;
+					 }
 					//first check if the round is going to end
 					
 					//determining order
-					
+					//System.out.println("inRound is true");
 					if(PokerServer.dealer==turnOrder&&count==0)//this player will be the dealer for this round and start betting
 					{
+						pw.println("dealer!"+ " " + PokerServer.dealer);
+						pw.flush();
 						//inTurn=true;
 						pw.println("Turn:0");
+						pw.flush();
 						count++;
 					}
 					if(inTurn==true)
@@ -340,10 +371,12 @@ class ServerThread extends Thread
 						if(amountBet<PokerServer.maxBet)//if have to call a raise
 						{
 						pw.println("Turn:"+ (PokerServer.maxBet-amountBet));
+						pw.flush();
 						}
 						else if (amountBet==PokerServer.maxBet &&PokerServer.maxBet==0)//in case no one has bet yet
 						{
 							pw.println("Turn:0");
+							pw.flush();
 						}
 						else//round is over
 						{
@@ -372,7 +405,9 @@ class ServerThread extends Thread
 								PokerServer.maxBet=0;
 								PokerServer.part_Players.get(0).doneBet=false;
 								PokerServer.part_Players.get(0).pw.println("Done");
+								PokerServer.part_Players.get(0).pw.flush();
 								PokerServer.part_Players.get(0).pw.println("Winner:"+PokerServer.MoneyPot);
+								PokerServer.part_Players.get(0).pw.flush();
 								PokerServer.part_Players.get(0).count=0;
 								PokerServer.rounds=1;
 								PokerServer.part_Players.removeAllElements();
