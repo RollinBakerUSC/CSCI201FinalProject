@@ -287,14 +287,14 @@ class ServerThread extends Thread
 	private Socket s;
 	public BufferedReader br;
 	public PrintWriter pw;
-	boolean started;//keeps track if a poker game has started or not
-	boolean inRound;//keeps track if a player is currently participating in a round or not (either just connected in middle of a round or folded)
+	volatile boolean started;//keeps track if a poker game has started or not
+	volatile boolean inRound;//keeps track if a player is currently participating in a round or not (either just connected in middle of a round or folded)
 	public int amountBet;//keeps track of how much have bet during a round
-	boolean inTurn;//keeps track of whose turn it is to bet
+	volatile boolean inTurn;//keeps track of whose turn it is to bet
 	public int turnOrder;//keeps track of the order of players
 	HandRank Rank;
 	int count;
-	boolean doneBet; //keeps track of if a person has finished betting
+	volatile boolean doneBet; //keeps track of if a person has finished betting
 	public ServerThread(Socket s){
 		this.s=s;
 		inRound=false;
@@ -348,10 +348,10 @@ class ServerThread extends Thread
 					
 					 if(test==0)
 					 {
-					pw.println(PokerServer.dealer);
-					pw.flush();
-					pw.println("turn is:" + turnOrder);
-					pw.flush();
+					System.out.println(PokerServer.dealer);
+					//pw.flush();
+					System.out.println("turn is:" + turnOrder);
+					//pw.flush();
 					test++;
 					 }
 					//first check if the round is going to end
@@ -475,8 +475,10 @@ class ServerThread extends Thread
 						}	
 						else if (line.contains("Call:"))
 						{
+							
 							doneBet=true;
 							inTurn=false;
+							System.out.println(line.substring(4,line.length()));
 							int betAmount=Integer.parseInt(line.substring(4,line.length()));
 							PokerServer.MoneyPot=PokerServer.MoneyPot + betAmount;
 							amountBet=amountBet+betAmount;
