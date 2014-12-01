@@ -79,10 +79,10 @@ public class PokerServer extends Thread{
 					st.inRound=true;
 					st.doneBet=false;
 					Card card1=PokerDeck.deal();//hands out cards
-					String card1String=card1.getValueAsString()+card1.getSuitAsString();
+					String card1String=card1.getValueAsString()+" "+card1.getSuitAsString();
 					//st.pw.println(card1String);
 					Card card2=PokerDeck.deal();
-					String card2String=card2.getValueAsString()+card2.getSuitAsString();
+					String card2String=card2.getValueAsString()+ " " +card2.getSuitAsString();
 					st.pw.println("Hand:"+card1String + " "+card2String);
 					st.pw.flush();
 					}
@@ -99,6 +99,7 @@ public class PokerServer extends Thread{
 					doneRound=false;
 				}
 			}
+			
 			if(doneRound==true)
 			{
 				PokerServer.maxBet=0;
@@ -180,19 +181,19 @@ public class PokerServer extends Thread{
 					if(PokerServer.rounds==2)//3 cards
 					{
 						Card card1=PokerDeck.deal();//hands out cards
-						 card1String=card1.getValueAsString()+card1.getSuitAsString();
+						 card1String=card1.getValueAsString()+ " " + card1.getSuitAsString();
 						//st.pw.println(card1String);
 						Card card2=PokerDeck.deal();
-						 card2String=card2.getValueAsString()+card2.getSuitAsString();
+						 card2String=card2.getValueAsString()+ " " +card2.getSuitAsString();
 						//st.pw.println(card2String);
 						Card card3=PokerDeck.deal();
-						card3String = card3.getValueAsString()+card3.getSuitAsString();
+						card3String = card3.getValueAsString()+ " " +card3.getSuitAsString();
 						//st.pw.println("Deal3:"+card1String+","+card2String+","+card3String);
 					}
 					else if (PokerServer.rounds==3||PokerServer.rounds==4)
 					{
 						Card card1=PokerDeck.deal();//hands out cards
-						 card1String=card1.getValueAsString()+card1.getSuitAsString();
+						 card1String=card1.getValueAsString()+ " " +card1.getSuitAsString();
 						//st.pw.println(card1String);
 
 					}
@@ -206,7 +207,7 @@ public class PokerServer extends Thread{
 					//UPDATE DEALER HERE???
 						if(PokerServer.rounds==2)
 						{
-						st.pw.println("Deal3:"+card1String+","+card2String+","+card3String);
+						st.pw.println("Deal3:"+card1String+" "+card2String+" "+card3String);
 						st.pw.flush();
 						}
 						else if (PokerServer.rounds==3||PokerServer.rounds==4)
@@ -259,7 +260,7 @@ class ChatThread extends Thread
 		{
 			try{
 				String line=br.readLine();
-				if(line.contains("Message:"))
+				if(line != null && line.contains("Message:"))
 				{
 					String message=line.substring(8,line.length());
 					for(ServerThread client : PokerServer.pokerPlayers)
@@ -317,8 +318,8 @@ class ServerThread extends Thread
 			br=new BufferedReader(new InputStreamReader(s.getInputStream()));
 			pw = new PrintWriter (s.getOutputStream());
 			System.out.println("hi");
-			pw.println("connected yay");
-			pw.flush();
+			//pw.println("connected yay");
+			//pw.flush();
 		}
 		catch(IOException ioe)
 		{
@@ -339,7 +340,7 @@ class ServerThread extends Thread
 				
 				if(tester==0)
 				{
-				System.out.println(inRound);
+				//System.out.println(inRound);
 				}
 				tester=tester+1;
 				 if (inRound==true)

@@ -23,6 +23,30 @@ public class Card {
 		this.value = val;
 	}
 	
+	public Card(int val, String suit){
+		if(val > 13 || val < 1){
+			System.out.println("Illegal card value ERROR");
+		}
+		this.value = val;
+		if(suit.equals("Hearts")){
+			this.suit = Suit.HEARTS;
+		}
+		else if(suit.equals("Clubs")){
+			this.suit = Suit.CLUBS;
+		}
+		else if(suit.equals("Spades")){
+			this.suit = Suit.SPADES;
+		}
+		else if(suit.equals("Diamonds")){
+			this.suit = Suit.DIAMONDS;
+		}
+		else{
+			System.err.println("Illegal suit passed into card constructor");
+			System.out.println(suit);
+			this.suit = null;
+		}
+	}
+	
 	//Returns suit in form of enum
 	public Suit getSuit(){
 		return this.suit;

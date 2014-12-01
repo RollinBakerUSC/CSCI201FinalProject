@@ -11,15 +11,15 @@ public class HandRank implements Comparable {
 	public enum HandType {HIGHCARD, ONEPAIR, TWOPAIR, THREEOFAKIND, STRAIGHT, FLUSH, FULLHOUSE,
 					FOUROFAKIND, STRAIGHTFLUSH, ROYALFLUSH}
 	
-	private HandType handType;
+	HandType handType;
 	
 	
 	//14 indicates Ace-high
-	private int highCardRank = 0;
-	private int secondHighCard = 0;
-	private int thirdHighCard = 0;
-	private int fourthHighCard = 0;
-	private int fifthHighCard = 0;
+	int highCardRank = 0;
+	int secondHighCard = 0;
+	int thirdHighCard = 0;
+	int fourthHighCard = 0;
+	int fifthHighCard = 0;
 	private Card[] hand;
 	private int handSize;
 	private ArrayList<Integer> cardValues;
@@ -841,6 +841,7 @@ public class HandRank implements Comparable {
 	public boolean equals(Object anotherHand){
 		return(this.compareTo(anotherHand) == 0);
 	}
+	
 	
 	public String toString(){
 		String highCardString;
