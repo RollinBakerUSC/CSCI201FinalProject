@@ -4,22 +4,22 @@ import java.util.ArrayList;
 
 public class CompareHands {
 
-	static ArrayList<Player> getWinningPlayer(ArrayList<Player> players){
+	static ArrayList<HandRank> getWinningPlayer(ArrayList<HandRank> players){
 		//Assume you have not called get best five card hand
-		ArrayList<Player> winners = new ArrayList<Player>();
-		Player winner = players.get(0);
-		Player secondWinner = null;
-		Player thirdWinner = null;
-		Player fourthWinner = null;
-		Player fifthWinner = null;
-		Player sixthWinner = null;
-		Player seventhWinner = null;
-		Player eighthWinner = null;
-		for(int i = 0; i < players.size(); i++){
-			players.get(i).getBest5CardHand();
-		}
+		ArrayList<HandRank> winners = new ArrayList<HandRank>();
+		HandRank winner = players.get(0);
+		HandRank secondWinner = null;
+		HandRank thirdWinner = null;
+		HandRank fourthWinner = null;
+		HandRank fifthWinner = null;
+		HandRank sixthWinner = null;
+		HandRank seventhWinner = null;
+		HandRank eighthWinner = null;
+//		for(int i = 0; i < players.size(); i++){
+//			players.get(i).getBest5CardHand();
+//		}
 		for(int i = 1; i < players.size(); i++){
-			if(players.get(i).getHandRank().compareTo(winner.getHandRank()) > 0){
+			if(players.get(i).compareTo(winner) > 0){
 				if(secondWinner != null){
 					secondWinner = null;
 					thirdWinner = null;
@@ -31,7 +31,7 @@ public class CompareHands {
 				}
 				winner = players.get(i);
 			}
-			else if(players.get(i).getHandRank().compareTo(winner.getHandRank()) == 0){
+			else if(players.get(i).compareTo(winner) == 0){
 				if(secondWinner == null){
 					secondWinner = players.get(i);
 				}

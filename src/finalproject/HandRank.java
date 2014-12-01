@@ -13,6 +13,7 @@ public class HandRank implements Comparable {
 	
 	private HandType handType;
 	
+	
 	//14 indicates Ace-high
 	private int highCardRank = 0;
 	private int secondHighCard = 0;
@@ -23,6 +24,7 @@ public class HandRank implements Comparable {
 	private int handSize;
 	private ArrayList<Integer> cardValues;
 	private ArrayList<Card.Suit> cardSuits;
+	String name;
 	
 	//For intermediate hand processing, will be used once best possible hand has been narrowed
 	private ArrayList<Integer> targetCardValues;
@@ -62,6 +64,50 @@ public class HandRank implements Comparable {
 		}	
 	}
 	
+	//For use by Server only, creates stripped down class instance containing
+	//only the data members necessary for determining the winner.
+	//The only methods that should be called on an instance of HandRank instantiated with
+	//the following constructor should be compareTo, equals, and toString
+	public HandRank(int handtype, int highcard, int secondhighcard, int thirdhighcard, int fourthhighcard, int fifthhighcard){
+		switch(handtype){
+		case 0:
+			this.handType = HandType.HIGHCARD;
+			break;
+		case 1:
+			this.handType = HandType.ONEPAIR;
+			break;
+		case 2:
+			this.handType = HandType.TWOPAIR;
+			break;
+		case 3:
+			this.handType = HandType.THREEOFAKIND;
+			break;
+		case 4:
+			this.handType = HandType.STRAIGHT;
+			break;
+		case 5:
+			this.handType = HandType.FLUSH;
+			break;
+		case 6:
+			this.handType = HandType.FULLHOUSE;
+			break;
+		case 7:
+			this.handType = HandType.FOUROFAKIND;
+			break;
+		case 8:
+			this.handType = HandType.STRAIGHTFLUSH;
+			break;
+		case 9:
+			this.handType = HandType.ROYALFLUSH;
+			break;
+		}
+		
+		this.highCardRank = highcard;
+		this.secondHighCard = secondhighcard;
+		this.thirdHighCard = thirdhighcard;
+		this.fourthHighCard = fourthhighcard;
+		this.fifthHighCard = fifthhighcard;
+	}
 	/*
 	 * Every checkFor...() function has a corresponding evaluate...() function.
 	 * checkFor() will verify the minimum conditions required for that hand are met
@@ -792,6 +838,10 @@ public class HandRank implements Comparable {
 		}
 	}
 	
+	public boolean equals(Object anotherHand){
+		return(this.compareTo(anotherHand) == 0);
+	}
+	
 	public String toString(){
 		String highCardString;
 		if(highCardRank == 14){
@@ -883,5 +933,9 @@ public class HandRank implements Comparable {
 		}
 	
 		return (this.handType + ", " + highCardString);
+	}
+	
+	public String getPlayerName(){
+		return this.name;
 	}
 }

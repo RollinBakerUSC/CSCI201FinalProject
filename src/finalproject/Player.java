@@ -2,7 +2,7 @@ package finalproject;
 
 import java.util.ArrayList;
 
-public class Player {
+public class Player extends Thread{
 
 	private Card[] pocketCards;
 	ArrayList<Card> commonCards;
@@ -14,12 +14,18 @@ public class Player {
 		this.name = name;
 		this.money = 0;
 		this.commonCards = new ArrayList<Card>();
+		this.start();
 	}
 	
 	public Player(String name, int money){
 		this.name = name;
 		this.money = money;
 		this.commonCards = new ArrayList<Card>();
+		this.start();
+	}
+	
+	public void run(){
+		
 	}
 	
 	public void setHand(Card c1, Card c2){
@@ -47,6 +53,7 @@ public class Player {
 		}
 		
 		this.bestHand = new HandRank(totalCards);
+		this.bestHand.name = this.name;
 	}
 	
 	public void setCommonCards(ArrayList<Card> commons){
@@ -65,7 +72,7 @@ public class Player {
 		return this.bestHand;
 	}
 	
-	public String getName(){
+	public String getPlayerName(){
 		return this.name;
 	}
 	
