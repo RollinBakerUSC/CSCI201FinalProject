@@ -107,7 +107,7 @@ public class Player extends Thread{
 							String card2SuitString = cardParser.next();
 							Card c2 = getCardFromString(card2ValString, card2SuitString);
 							
-							setHand(c1, c2);
+							board.gameBoard.setYourCards(c1, c2);//setHand(c1, c2);
 							System.out.println("Received hand in response to HAND command from server");
 							printHand();
 						}

@@ -1,17 +1,22 @@
 package finalproject;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -98,9 +103,9 @@ public class GamePanel extends JPanel {
 		setButtons();
 		setMoney();
 		setUpCall();
-		setOtherPlayerCards();
-		setYourCards();
-		setCommonCards();
+		//setOtherPlayerCards();
+		//setYourCards();
+		//setCommonCards();
 		setTable();
 		
 		System.out.println ("Updating card....turn 1");
@@ -169,9 +174,9 @@ public class GamePanel extends JPanel {
 	}
 	
 	//this is going to set your cards (cards in the bottom center)
-	void setYourCards (){
-		Card firstCard= cardDeck.deal();
-		Card secondCard= cardDeck.deal();
+	void setYourCards (Card firstCard, Card secondCard){
+		//firstCard= cardDeck.deal();
+		//secondCard= cardDeck.deal();
 		game.pokerPlayer.setHand (firstCard, secondCard);
 		String firstCardKey=firstCard.getSuitAsString()+firstCard.getValueAsString();
 		String secondCardKey=secondCard.getSuitAsString()+secondCard.getValueAsString();
@@ -181,6 +186,18 @@ public class GamePanel extends JPanel {
 			playerCard1=visualCards.get(firstCardKey);
 			
 			Point player1= new Point (400, 475);
+			try {
+				Image cardImage = ImageIO.read(playerCard1);
+				BufferedImage cImage = toBufferedImage(cardImage);
+				Graphics2D g2d = (Graphics2D)this.getGraphics();
+				g2d.drawImage(cardImage, player1.x, player1.y, 65, 65, null);
+				this.repaint();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
 			/*playerCard1.setBounds(player1.x, player1.y, 65, 65);
 			
 			add (playerCard1);*/
@@ -194,6 +211,16 @@ public class GamePanel extends JPanel {
 			playerCard2= visualCards.get(secondCardKey);
 			
 			Point player2=new Point (335, 475);
+			try {
+				Image cardImage = ImageIO.read(playerCard2);
+				BufferedImage cImage = toBufferedImage(cardImage);
+				Graphics2D g2d = (Graphics2D)this.getGraphics();
+				g2d.drawImage(cardImage, player2.x, player2.y, 65, 65, null);
+				this.repaint();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			/*playerCard2.setBounds (player2.x, player2.y, 65, 65);
 			add (playerCard2);*/
 		}
@@ -1025,6 +1052,24 @@ public class GamePanel extends JPanel {
 			}
 			//send out some message
 		}
+	}
+	public static BufferedImage toBufferedImage(Image img)
+	{
+	    if (img instanceof BufferedImage)
+	    {
+	        return (BufferedImage) img;
+	    }
+
+	    // Create a buffered image with transparency
+	    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+	    // Draw the image on to the buffered image
+	    Graphics2D bGr = bimage.createGraphics();
+	    bGr.drawImage(img, 0, 0, null);
+	    bGr.dispose();
+
+	    // Return the buffered image
+	    return bimage;
 	}
 	
 }

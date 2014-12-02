@@ -285,7 +285,7 @@ public class PokerServer extends Thread{
 									winnerEarnings = PokerServer.MoneyPot/Winners.size();
 									insertData(winnerIndex, winnerEarnings);
 //									getData();
-									st.pw.println("Winner:"+(PokerServer.MoneyPot/Winners.size())+" '"+getData()+"'");
+									st.pw.println("Winner:"+(PokerServer.MoneyPot/Winners.size()));
 									st.pw.flush();
 								}
 								else
