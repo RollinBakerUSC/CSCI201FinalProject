@@ -24,8 +24,8 @@ public class Player extends Thread{
 	private int money;
 	private int moneyBetThisRound;
 	private HandRank bestHand = null;
-	private BufferedReader br;
-	private PrintWriter pw;
+	public BufferedReader br;
+	public PrintWriter pw;
 	private List<String> serverCommands;
 	private ReentrantLock bufferAccess;
 	private Condition messageReceived;
@@ -167,8 +167,11 @@ public class Player extends Thread{
 							//Player should input in form we want to send
 							if(playerResponse.contains("Call:")){
 								pw.println(playerResponse);
+								//pw.println("This is a response");
 								money-= (amount - moneyBetThisRound);
+								System.out.println(playerResponse);
 								pw.flush();
+								System.out.println("foo");
 							}
 							else if(playerResponse.contains("Raise:")){
 								pw.println(playerResponse);
@@ -178,6 +181,9 @@ public class Player extends Thread{
 								pw.flush();
 							}
 							else if(playerResponse.contains("Fold")){
+								this.commonCards.clear();
+								this.pocketCards = null;
+								this.moneyBetThisRound = 0;
 								pw.println(playerResponse);
 								pw.flush();
 							}
@@ -225,7 +231,7 @@ public class Player extends Thread{
 								commonCards.add(c2);
 							}
 						}
-						System.out.println(messageFromServer);
+						//System.out.println(messageFromServer);
 						//serverCommands.notify();
 					}
 					

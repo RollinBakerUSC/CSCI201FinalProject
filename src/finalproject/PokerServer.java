@@ -41,13 +41,13 @@ public class PokerServer extends Thread{
 				Socket s=ss.accept();
 				System.out.println("Connection from" + s.getInetAddress());
 				ServerThread st = new ServerThread(s);
-				ChatThread ct=new ChatThread(s,st);
+				//ChatThread ct=new ChatThread(s,st);
 				pokerPlayers.add(st);
 				//System.out.println("hi");
 				
 				st.start();
 				//st.pw.println("you connected!");
-				ct.start();
+				//ct.start();
 			}
 		}
 		catch (IOException ioe){
@@ -71,7 +71,7 @@ public class PokerServer extends Thread{
 				}
 				if(round==false)//no one is in a round, meaning either round has ended or game hasn't started
 				{
-					
+					System.out.println("Starting a new game");
 					for(ServerThread st : PokerServer.pokerPlayers)//starts round, hands out cards
 					{
 						
@@ -89,14 +89,18 @@ public class PokerServer extends Thread{
 					String card2String=card2.getValueAsString()+" " +card2.getSuitAsString();
 					st.pw.println("Hand:"+card1String + " "+card2String);
 					st.pw.flush();
+					st.pw.println("StartRound");//sends signal to a client to start a new round
+					st.pw.flush();
+					st.inRound=true;
+					st.doneBet=false;
 					}
-					for(ServerThread st : PokerServer.part_Players)
+				/*	for(ServerThread st : PokerServer.part_Players)
 					{
 						st.pw.println("StartRound");//sends signal to a client to start a new round
 						st.pw.flush();
 						st.inRound=true;
 						st.doneBet=false;
-					}
+					}*/
 				}
 				
 			}
@@ -105,6 +109,7 @@ public class PokerServer extends Thread{
 			
 			int counter=0;
 			//System.out.println("size of part_Players is : " + PokerServer.part_Players.size());
+			synchronized(PokerServer.part_Players){
 			for(ServerThread st : PokerServer.part_Players)
 			{
 				if(counter==0)
@@ -119,34 +124,52 @@ public class PokerServer extends Thread{
 				}
 				if(st.doneBet==true)
 				{
-					System.out.println("I FOUDN A TRUE");
-					try{
-					String blah=st.br.readLine();
-					}
-					catch(IOException ioe)
-					{
-					}
+					//System.out.println("I FOUDN A TRUE");
+					
 				}
+			}
 			}
 			if(doneRound==true)
 			{
 				PokerServer.maxBet=0;
 				count=0;
 				System.out.println("do i get here");
+				/*boolean foundDealer=false;
+				while(foundDealer==false)
+				{
 				if(PokerServer.dealer<PokerServer.pokerPlayers.size())//updating the dealer
-				{
-					PokerServer.dealer++;
-				}
-				else
-				{
-					PokerServer.dealer=1;
-				}
-			
-				if(PokerServer.rounds==4)//finished last round, reset all variables
+					{
+						PokerServer.dealer++;
+					}
+					else
+					{
+						PokerServer.dealer=1;
+					}
+					
+					for(ServerThread st : PokerServer.pokerPlayers)//checking that the correct dealer is also in the round
+					{
+						st.inTurn=false;
+						if(st.turnOrder==PokerServer.dealer&&st.inRound==true)
+						{
+							System.out.println("found dealer, turn order is : " + st.turnOrder);
+							foundDealer=true;
+						}
+					}
+				}*/
+				
+				if(PokerServer.rounds==4||PokerServer.part_Players.size()==1)//finished last round, reset all variables
 				{
 					int maxRank=0;
 					PokerDeck.shuffle();
 					System.out.println("end of round game");
+					if(PokerServer.dealer<PokerServer.pokerPlayers.size())
+					{
+						PokerServer.dealer++;
+					}
+					else
+					{
+						PokerServer.dealer=1;
+					}
 					for(ServerThread st:PokerServer.part_Players)
 					{
 						st.inRound=false;
@@ -157,6 +180,7 @@ public class PokerServer extends Thread{
 						st.pw.flush();
 						st.count=0;
 						PokerServer.rounds=1;
+						
 						//insert code for determining winner
 						try{
 						String dummy=st.br.readLine();//or just access 
@@ -180,7 +204,8 @@ public class PokerServer extends Thread{
 					System.out.println(PokerServer.player_Hands.size());
 					ArrayList<HandRank> Winners=CompareHands.getWinningPlayer(PokerServer.player_Hands);
 					
-					
+					synchronized(PokerServer.part_Players)
+					{
 					for(ServerThread st:PokerServer.part_Players)
 					{
 						if(st.Rank.equals(Winners.get(0)))
@@ -195,7 +220,7 @@ public class PokerServer extends Thread{
 						}
 					
 					}
-					
+					}
 					PokerServer.part_Players.removeAllElements();
 					PokerServer.MoneyPot=0;
 					PokerServer.player_Hands.clear();
@@ -225,6 +250,8 @@ public class PokerServer extends Thread{
 						//st.pw.println(card1String);
 
 					}
+					synchronized(PokerServer.part_Players)
+					{
 					for(ServerThread st:PokerServer.part_Players)
 					{
 						//send each thread the cards TO DO
@@ -246,6 +273,7 @@ public class PokerServer extends Thread{
 						
 						
 					}
+					}
 				}
 			}
 		}
@@ -263,7 +291,7 @@ public class PokerServer extends Thread{
 	}
 }
 
-
+/*
 class ChatThread extends Thread
 {
 	private Socket s;
@@ -274,7 +302,7 @@ class ChatThread extends Thread
 		this.s=s;
 		this.st=st;
 		try{
-			br=new BufferedReader(new InputStreamReader(s.getInputStream()));
+			//br=new BufferedReader(new InputStreamReader(s.getInputStream()));
 			pw = new PrintWriter (s.getOutputStream());
 		}
 		catch(IOException ioe)
@@ -309,7 +337,7 @@ class ChatThread extends Thread
 	}
 }
 
-
+*/
 class ServerThread extends Thread
 {
 	private Socket s;
@@ -370,7 +398,7 @@ class ServerThread extends Thread
 				{
 				//System.out.println(inRound);
 				}
-				tester=tester+1;
+				tester=tester+1;	
 				 if (inRound==true)
 				{
 
@@ -383,20 +411,26 @@ class ServerThread extends Thread
 					test++;
 					 }
 					//first check if the round is going to end
-					
+					if(PokerServer.part_Players.size()==1)
+					{
+						doneBet=true;
+						inTurn=false;
+					}
 					//determining order
 					//System.out.println("inRound is true");
 					if(PokerServer.dealer==turnOrder&&count==0)//this player will be the dealer for this round and start betting
 					{
-						pw.println("dealer!"+ " " + PokerServer.dealer);
+						pw.println("dealer!"+ " " + PokerServer.dealer+ " " + doneBet);
 						pw.flush();
 						//inTurn=true;
-						pw.println("Turn:0");
-						pw.flush();
+						//pw.println("Turn:0");
+						//pw.flush();
 						count++;
+						inTurn=true;
 					}
-					if(inTurn==true)
+					if(inTurn==true&&doneBet==false)
 					{
+						//System.out.println("inTurn is true");
 						if(amountBet<PokerServer.maxBet)//if have to call a raise
 						{
 						pw.println("Turn:"+ (PokerServer.maxBet-amountBet));
@@ -404,6 +438,7 @@ class ServerThread extends Thread
 						}
 						else if (amountBet==PokerServer.maxBet &&PokerServer.maxBet==0)//in case no one has bet yet
 						{
+							//System.out.println("i'm outputting turn:0");
 							pw.println("Turn:0");
 							pw.flush();
 						}
@@ -416,8 +451,10 @@ class ServerThread extends Thread
 					//once its a players turn
 					if(doneBet==false)
 					{
+						System.out.println("YO I'M BEFORE READLINE " + br.ready());
 					String line = br.readLine();
-					
+					System.out.println("after br.readline");
+					System.out.println(line);
 						if(line.equals("Fold"))//user folded
 						{
 							PokerServer.part_Players.remove(this);
@@ -425,25 +462,35 @@ class ServerThread extends Thread
 							amountBet=0;
 							inTurn=false;
 						
-							boolean found=false;
+							boolean found=false;/*
 							if(PokerServer.part_Players.size()==1)//if only one person left after fold
 							{
+								
+								if(PokerServer.dealer<PokerServer.pokerPlayers.size())//updating the dealer
+								{
+									PokerServer.dealer++;
+								}
+								else
+								{
+									PokerServer.dealer=1;
+								}
 								PokerServer.part_Players.get(0).inRound=false;
+								
 								PokerServer.part_Players.get(0).amountBet=0;
-								PokerServer.part_Players.get(0).inTurn=false;
+								//PokerServer.part_Players.get(0).inTurn=false;
 								PokerServer.maxBet=0;
-								PokerServer.part_Players.get(0).doneBet=false;
+								//PokerServer.part_Players.get(0).doneBet=false;
 								PokerServer.part_Players.get(0).pw.println("Done");
 								PokerServer.part_Players.get(0).pw.flush();
 								PokerServer.part_Players.get(0).pw.println("Winner:"+PokerServer.MoneyPot);
 								PokerServer.part_Players.get(0).pw.flush();
 								PokerServer.part_Players.get(0).count=0;
 								PokerServer.rounds=1;
-								PokerServer.part_Players.removeAllElements();
+							//	PokerServer.part_Players.removeAllElements();
 								PokerServer.MoneyPot=0;
 								PokerServer.player_Hands.clear();
-							}
-							else{
+							}*/
+							//if(PokerServer.part_Players.size()>1){
 							for(ServerThread st: PokerServer.pokerPlayers)//determining the next person betting
 							{
 								if(st.inRound==true&&st.turnOrder>turnOrder)
@@ -463,24 +510,29 @@ class ServerThread extends Thread
 									}
 								}
 							}
-						}
+				//		}
 						}
 						else if (line.contains("Raise:"))//reads in a bet and updates the public pot 
 						{
-							doneBet=true;
+							
 							inTurn=false;
 							int betAmount=Integer.parseInt(line.substring(6,line.length()));
 							PokerServer.MoneyPot=PokerServer.MoneyPot+betAmount;
 							amountBet=amountBet+betAmount;
 							PokerServer.maxBet=amountBet;
+						
 							boolean found=false;
-							for(ServerThread st: PokerServer.pokerPlayers)//update all players to have to continue matching the raise
+							synchronized(PokerServer.part_Players)
+							{
+							for(ServerThread st: PokerServer.part_Players)//update all players to have to continue matching the raise
 							{
 								if(st!=this)
 								{
 									st.doneBet=false;
 								}
 							}
+							}
+							doneBet=true;
 							for(ServerThread st: PokerServer.pokerPlayers)//determining the next person betting
 							{
 								if(st.inRound==true&&st.turnOrder>turnOrder)
@@ -503,9 +555,10 @@ class ServerThread extends Thread
 						}	
 						else if (line.contains("Call:"))
 						{
+							System.out.println("in call");
 							doneBet=true;
 							inTurn=false;
-							int betAmount=Integer.parseInt(line.substring(4,line.length()));
+							int betAmount=Integer.parseInt(line.substring(5,line.length()));
 							PokerServer.MoneyPot=PokerServer.MoneyPot + betAmount;
 							amountBet=amountBet+betAmount;
 							boolean found=false;
@@ -521,7 +574,7 @@ class ServerThread extends Thread
 							{
 								for(ServerThread st: PokerServer.pokerPlayers)
 								{
-									if(st.inRound==true)
+									if(st.inRound==true&&st!=this)
 									{
 										st.inTurn=true;
 										
