@@ -332,6 +332,14 @@ public class Player extends Thread{
 		return card;
 	}
 	
+	Integer getMoney(){
+		return this.money;
+	}
+	
+	void setBet(Integer betAmount){
+		this.money=this.money-betAmount;
+	}
+	
 	public int getFirstIntFromString(String string){
 		String firstNumber = string.replaceFirst(".*?(\\d+).*", "$1");
 		int firstNum = Integer.parseInt(firstNumber);

@@ -1,6 +1,9 @@
-package finalProj;
+package finalproject;
 
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,8 +20,10 @@ import javax.swing.JTextField;
 
 public class GUIBoard extends JFrame {
 
-	//left:	
-		//get actual card images
+	//to do:	
+		//fix alignment
+		//add functionality of export and stats 
+		//dealer image
 		//get table image
 	
 	//everything is stored here, so this has the grid bag layout
@@ -26,26 +31,38 @@ public class GUIBoard extends JFrame {
 
 	//this is being updated so you want to have it be independent of the GUI
 	//you start off with 1000
-	JLabel money; 
-
+	//JLabel money; 
+	boolean isDealer=false;
+	
 	//you have a player cause the GUIBoard is from the perspective of a player
 	Player pokerPlayer;
 	public GUIBoard (){
 		super ("Can't Read My Poker Face");
-		setSize (800, 800);
+		setSize (800, 600);
+		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		String name= (String)JOptionPane.showInputDialog (this,"What's your name?", 
 				"Hello", JOptionPane.PLAIN_MESSAGE);
-		pokerPlayer=new Player (name, 1000.0);
-
-		gameBoard=new GamePanel(new GridBagLayout(), this);
-
+		String hostname= (String)JOptionPane.showInputDialog (this, "What hostname would you like to connect to?",
+				"Connectivity", JOptionPane.PLAIN_MESSAGE);
+		String port= (String)JOptionPane.showInputDialog (this, "What port would you like to connect to?",
+				"Connectivity", JOptionPane.PLAIN_MESSAGE);
+		
+		Integer connectToPort;
+		try{
+			connectToPort= Integer.parseInt(port);
+		}
+		
+		catch (Exception e){
+			JOptionPane.showMessageDialog (this, "Using default port 1500.");
+			connectToPort=1500;
+		}
+		
+		pokerPlayer=new Player (name, 1000, hostname, connectToPort);
+		
 		//pretty self explanatory stuff here, make a menubar then menus
 		//add to the menus
-		String labelTemp= pokerPlayer.getMoney().toString();
-		money= new JLabel (labelTemp);
-
 		JMenuBar menu= new JMenuBar();
 		JMenu game= new JMenu("Game");
 		JMenu acct= new JMenu("Account");
@@ -56,41 +73,29 @@ public class GUIBoard extends JFrame {
 		JMenuItem quitGame= new JMenuItem ("Quit Game");
 		quitGame.addActionListener (new quitGameListen(this));
 
-		JMenuItem export= new JMenuItem ("Export Data");
+		/*JMenuItem export= new JMenuItem ("Export Data");
 		export.addActionListener (new exportListen());
-
+*/
 		JMenuItem stats= new JMenuItem ("Statistics");
-		stats.addActionListener (new statsListen());
+		stats.addActionListener (new statsListen(this));
 
-		acct.add (export);
+		//acct.add (export);
 		acct.add (stats);
 		game.add (newGame);
 		game.add (quitGame);
 
 		menu.add (game);
 		menu.add (acct);
-
-		//buttons for betting and folding
-		JButton bet= new JButton ("Bet");
-		bet.addActionListener (new betListen (this));
-
-		JButton fold= new JButton ("Fold");
-
-		//gameBoard.money= new JLabel ("1000");
-
-		gameBoard.add (bet);
-		gameBoard.add (fold);
-
-		//this is just a placeholder string
-		//you want to start off with the player's money
-		gameBoard.add (money);
-
+	
+		gameBoard=new GamePanel(null, this);
+		//gameBoard.add (money);
 		add (gameBoard);
 		setJMenuBar (menu);
 		setVisible(true);
 	}
 
-	class betListen implements ActionListener {
+	/*class betListen implements ActionListener {
+		//send out some message this is happening
 		GUIBoard gui;
 		public betListen (GUIBoard game){
 			gui=game;
@@ -99,11 +104,11 @@ public class GUIBoard extends JFrame {
 		public void actionPerformed (ActionEvent e){
 			//you want the user to specify how much they're betting
 
-			String amount= (String)JOptionPane.showInputDialog (gui,"Enter betting amount: ", 
+			String amount= (String)JOptionPane.showInputDialog (gui,"Enter betting amount (to nearest dollar): ", 
 					"Betting", JOptionPane.PLAIN_MESSAGE);
 			//Update player money here...
 			try {
-				Double bet= Double.parseDouble(amount);
+				Integer bet= Integer.parseInt(amount);
 
 				//you'll set the player's money when you make the money panel
 				if (bet>pokerPlayer.getMoney()){
@@ -130,9 +135,11 @@ public class GUIBoard extends JFrame {
 		//what'll this do? you want to get rid of the cards
 		public void actionPerformed (ActionEvent e){
 			gui.gameBoard.foldCards();
+			//send out some message
+			
 		}
 	}
-
+*/
 	class nextGameListen implements ActionListener {
 		private GUIBoard gui;
 		public nextGameListen (GUIBoard window){
@@ -141,6 +148,7 @@ public class GUIBoard extends JFrame {
 
 		public void actionPerformed (ActionEvent e){
 			gui.setVisible(false);
+			gui.dispose();
 			gui= new GUIBoard();
 		}
 	}
@@ -158,15 +166,21 @@ public class GUIBoard extends JFrame {
 		}
 	}
 
-	class exportListen implements ActionListener{
+	/*class exportListen implements ActionListener{
 		public void actionPerformed (ActionEvent e){
-
+			
 		}
 	}
-
+*/
 	class statsListen implements ActionListener{
+		GUIBoard gui;
+		public statsListen (GUIBoard game){
+			gui=game;
+		}
+		
 		public void actionPerformed (ActionEvent e){
-
+			JOptionPane.showMessageDialog (gui,"Game Statistics");
+			//showHistoryPopup();
 		}
 	}
 
