@@ -860,7 +860,9 @@ public class GamePanel extends JPanel {
 					gui.pokerPlayer.setBet(bet);
 					
 					money.setText("$"+gui.pokerPlayer.getMoney().toString());
-					this.notify();
+					synchronized(this){
+						this.notify();
+					}
 				}
 			}
 
@@ -880,7 +882,9 @@ public class GamePanel extends JPanel {
 		
 			foldCards();
 			this.gui.pokerPlayer.foldCards();
-			this.notify();
+			synchronized(this.gui.gameBoard){
+				this.gui.gameBoard.notify();
+			}
 			//send out some message
 		}
 	}

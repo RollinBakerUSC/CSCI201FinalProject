@@ -170,7 +170,9 @@ public class Player extends Thread{
 							//String playerResponse = userInput.nextLine();
 							//Player should input in form we want to send
 							try {
-								board.gameBoard.wait();
+								synchronized(board.gameBoard){
+									board.gameBoard.wait();
+								}
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
