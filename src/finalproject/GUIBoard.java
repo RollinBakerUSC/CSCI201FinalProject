@@ -6,6 +6,7 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -59,7 +60,7 @@ public class GUIBoard extends JFrame {
 			connectToPort=1500;
 		}
 		
-		pokerPlayer=new Player (name, 1000, hostname, connectToPort);
+		
 		
 		//pretty self explanatory stuff here, make a menubar then menus
 		//add to the menus
@@ -86,12 +87,15 @@ public class GUIBoard extends JFrame {
 
 		menu.add (game);
 		menu.add (acct);
+		pokerPlayer=new Player (name, 500, hostname, connectToPort, this);
 	
 		gameBoard=new GamePanel(null, this);
 		//gameBoard.add (money);
 		add (gameBoard);
 		setJMenuBar (menu);
 		setVisible(true);
+
+		
 	}
 
 	/*class betListen implements ActionListener {

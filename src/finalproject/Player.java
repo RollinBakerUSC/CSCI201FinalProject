@@ -22,6 +22,7 @@ public class Player extends Thread{
 	ArrayList<Card> commonCards;
 	private String name;
 	private int money;
+	private int amount;
 	private int moneyBetThisRound;
 	private HandRank bestHand = null;
 	public BufferedReader br;
@@ -29,8 +30,10 @@ public class Player extends Thread{
 	private List<String> serverCommands;
 	private ReentrantLock bufferAccess;
 	private Condition messageReceived;
+	private GUIBoard board;
 	
-	public Player(String name, String hostname, int port){
+	public Player(String name, String hostname, int port, GUIBoard board){
+		this.board = board;
 		bufferAccess = new ReentrantLock();
 		messageReceived = bufferAccess.newCondition();
 		serverCommands = Collections.synchronizedList(new ArrayList<String>());
@@ -54,7 +57,8 @@ public class Player extends Thread{
 		this.start();
 	}
 	
-	public Player(String name, int money, String hostname, int port){
+	public Player(String name, int money, String hostname, int port, GUIBoard board){
+		this.board = board;
 		bufferAccess = new ReentrantLock();
 		messageReceived = bufferAccess.newCondition();
 		serverCommands = Collections.synchronizedList(new ArrayList<String>());
@@ -160,34 +164,40 @@ public class Player extends Thread{
 							
 							//TODO: In GUI, activate buttons
 							String amountString = messageFromServer.substring(messageFromServer.indexOf(':')+1);
-							int amount = Integer.parseInt(amountString);
-							Scanner userInput = new Scanner(System.in);
-							System.out.println("What do you want to do? Amount to call is " + amount);
-							String playerResponse = userInput.nextLine();
+							amount = Integer.parseInt(amountString);
+							//Scanner userInput = new Scanner(System.in);
+							//System.out.println("What do you want to do? Amount to call is " + amount);
+							//String playerResponse = userInput.nextLine();
 							//Player should input in form we want to send
-							if(playerResponse.contains("Call:")){
-								pw.println(playerResponse);
-								//pw.println("This is a response");
-								money-= (amount - moneyBetThisRound);
-								System.out.println(playerResponse);
-								pw.flush();
-								System.out.println("foo");
+							try {
+								board.gameBoard.wait();
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-							else if(playerResponse.contains("Raise:")){
-								pw.println(playerResponse);
-								String raiseString = messageFromServer.substring(messageFromServer.indexOf(':')+1);
-								int raiseAmount = Integer.parseInt(raiseString);
-								money -= ((amount + raiseAmount) - moneyBetThisRound);
-								pw.flush();
-							}
-							else if(playerResponse.contains("Fold")){
-								this.commonCards.clear();
-								this.pocketCards = null;
-								this.moneyBetThisRound = 0;
-								pw.println(playerResponse);
-								pw.flush();
-							}
-							
+//							if(playerResponse.contains("Call:")){
+//								pw.println(playerResponse);
+//								//pw.println("This is a response");
+//								money-= (amount - moneyBetThisRound);
+//								System.out.println(playerResponse);
+//								pw.flush();
+//								System.out.println("foo");
+//							}
+//							else if(playerResponse.contains("Raise:")){
+//								pw.println(playerResponse);
+//								String raiseString = messageFromServer.substring(messageFromServer.indexOf(':')+1);
+//								int raiseAmount = Integer.parseInt(raiseString);
+//								money -= ((amount + raiseAmount) - moneyBetThisRound);
+//								pw.flush();
+//							}
+//							else if(playerResponse.contains("Fold")){
+//								this.commonCards.clear();
+//								this.pocketCards = null;
+//								this.moneyBetThisRound = 0;
+//								pw.println(playerResponse);
+//								pw.flush();
+//							}
+//							
 						}
 						else if(messageFromServer.contains("Winner")){
 							String amountString = messageFromServer.substring(messageFromServer.indexOf(':')+1);
@@ -212,23 +222,23 @@ public class Player extends Thread{
 								String card1ValString = cardParser.next();
 								String card1SuitString = cardParser.next();
 								Card c1 = getCardFromString(card1ValString, card1SuitString);
-								commonCards.add(c1);
+								board.gameBoard.updateCommonCards(c1);
 							}
 							else if(numCards == 3){
 								String card1ValString = cardParser.next();
 								String card1SuitString = cardParser.next();
 								Card c1 = getCardFromString(card1ValString, card1SuitString);
-								commonCards.add(c1);
+								board.gameBoard.updateCommonCards(c1);
 								
 								String card2ValString = cardParser.next();
 								String card2SuitString = cardParser.next();
 								Card c2 = getCardFromString(card2ValString, card2SuitString);
-								commonCards.add(c2);
+								board.gameBoard.updateCommonCards(c2);
 								
 								String card3ValString = cardParser.next();
 								String card3SuitString = cardParser.next();
 								Card c3 = getCardFromString(card3ValString, card3SuitString);
-								commonCards.add(c2);
+								board.gameBoard.updateCommonCards(c3);
 							}
 						}
 						//System.out.println(messageFromServer);
@@ -293,7 +303,7 @@ public class Player extends Thread{
 		return this.name;
 	}
 	
-	public static void main(String[] args){
+	/*public static void main(String[] args){
 		Scanner scan = new Scanner(System.in);
 		System.out.println("Player name?");
 		String name = scan.nextLine();
@@ -306,7 +316,7 @@ public class Player extends Thread{
 		
 		
 		
-	}
+	}*/
 	public Card getCardFromString(String cardValString, String cardSuitString){
 		int cardVal;
 		//System.out.println("In get card from string: ca")
@@ -337,7 +347,23 @@ public class Player extends Thread{
 	}
 	
 	void setBet(Integer betAmount){
-		this.money=this.money-betAmount;
+		if(betAmount == amount){
+			pw.println("Call:" + betAmount);
+		}
+		else{
+			pw.println("Raise:" + betAmount);
+		}
+		pw.flush();
+		this.money=this.money-(betAmount - moneyBetThisRound);
+		moneyBetThisRound = betAmount + moneyBetThisRound;
+	}
+
+	void foldCards(){
+		this.commonCards.clear();
+		this.pocketCards = null;
+		this.moneyBetThisRound = 0;
+		pw.println("Fold");
+		pw.flush();
 	}
 	
 	public int getFirstIntFromString(String string){

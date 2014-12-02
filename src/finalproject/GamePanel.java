@@ -93,7 +93,7 @@ public class GamePanel extends JPanel {
 		setTable();
 		
 		System.out.println ("Updating card....turn 1");
-		updateCommonCards();
+		//updateCommonCards();
 	}
 
 	//what needs to happen?
@@ -342,11 +342,11 @@ public class GamePanel extends JPanel {
 
 	//as a turn is finished, this will flip the common cards
 	//call this anytime a turn finishes
-	void updateCommonCards(){
+	void updateCommonCards(Card nextCommonCard){
 		updateCardCount++;
 				
 		if (updateCardCount==1){
-			Card nextCommonCard= cardDeck.deal();
+			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
 			cmnCard1.setIcon(visualCards.get(cmnCardKey).getIcon());
@@ -355,7 +355,7 @@ public class GamePanel extends JPanel {
 		}
 		
 		if (updateCardCount==2){
-			Card nextCommonCard= cardDeck.deal();
+			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
 			cmnCard2.setIcon(visualCards.get(cmnCardKey).getIcon());
@@ -364,7 +364,7 @@ public class GamePanel extends JPanel {
 		}
 		
 		if (updateCardCount==3){
-			Card nextCommonCard= cardDeck.deal();
+			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
 			cmnCard3.setIcon(visualCards.get(cmnCardKey).getIcon());
@@ -373,7 +373,7 @@ public class GamePanel extends JPanel {
 		}
 		
 		if (updateCardCount==4){
-			Card nextCommonCard= cardDeck.deal();
+			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
 			cmnCard4.setIcon(visualCards.get(cmnCardKey).getIcon());
@@ -382,7 +382,7 @@ public class GamePanel extends JPanel {
 		}
 		
 		if (updateCardCount==5){
-			Card nextCommonCard= cardDeck.deal();
+			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
 			cmnCard5.setIcon(visualCards.get(cmnCardKey).getIcon());
@@ -858,7 +858,9 @@ public class GamePanel extends JPanel {
 
 				else{
 					gui.pokerPlayer.setBet(bet);
+					
 					money.setText("$"+gui.pokerPlayer.getMoney().toString());
+					this.notify();
 				}
 			}
 
@@ -875,7 +877,10 @@ public class GamePanel extends JPanel {
 		}
 		//what'll this do? you want to get rid of the cards
 		public void actionPerformed (ActionEvent e){
+		
 			foldCards();
+			this.gui.pokerPlayer.foldCards();
+			this.notify();
 			//send out some message
 		}
 	}

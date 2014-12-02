@@ -72,7 +72,7 @@ public class PokerServer extends Thread{
 		Connection conn;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/final_project", "root", "csci201lab");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/final_project", "root", null);
 			String query = "INSERT INTO winners (winner_player_id, winnings) VALUES (?,?)";
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setString(1, ""+player_id);
@@ -91,7 +91,7 @@ public class PokerServer extends Thread{
 		String historyText = "";
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/final_project", "root", "csci201lab");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/final_project", "root", null);
 			String query = "SELECT * from winners";
 			Statement stmt = conn.createStatement();	
 			ResultSet rs = stmt.executeQuery(query);
