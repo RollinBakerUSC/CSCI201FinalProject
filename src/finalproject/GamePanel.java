@@ -94,7 +94,6 @@ public class GamePanel extends JPanel {
 		
 		System.out.println ("Updating card....turn 1");
 		updateCommonCards();
-		
 	}
 
 	//what needs to happen?

@@ -179,8 +179,7 @@ public class GUIBoard extends JFrame {
 		}
 		
 		public void actionPerformed (ActionEvent e){
-			JOptionPane.showMessageDialog (gui,"Game Statistics");
-			//showHistoryPopup();
+			//PokerServer.showHistoryPopup();
 		}
 	}
 
