@@ -22,7 +22,7 @@ public class Player extends Thread{
 	ArrayList<Card> commonCards;
 	private String name;
 	private int money;
-	private int amount;
+	int amount;
 	private int moneyBetThisRound;
 	private HandRank bestHand = null;
 	public BufferedReader br;

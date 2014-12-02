@@ -8,6 +8,7 @@ import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -36,20 +37,29 @@ public class GamePanel extends JPanel {
 	//you need a hashmap because when the player gets dealt his cards, 
 	//you have to use a look up table to get the corresponding JLabel
 	//why not a hashmap, it's fastest
-	HashMap<String, JLabel>visualCards;
+	//HashMap<String, JLabel>visualCards;
+	HashMap<String, File>visualCards;
 
 	/*
 	JLabel [] visualDeck;
 	JLabel [] playerCards;
 	JLabel [] availCards;
 	 */
-	JLabel playerCard1;
+/*	JLabel playerCard1;
 	JLabel playerCard2;
 	JLabel cmnCard1;
 	JLabel cmnCard2;
 	JLabel cmnCard3;
 	JLabel cmnCard4;
-	JLabel cmnCard5;
+	JLabel cmnCard5;*/
+	File playerCard1;
+	File playerCard2;
+	File cmnCard1;
+	File cmnCard2;
+	File cmnCard3;
+	File cmnCard4;
+	File cmnCard5;
+	
 	JLabel money;
 	JLabel callPot;
 	
@@ -63,15 +73,16 @@ public class GamePanel extends JPanel {
 		//manage=layout;
 		
 		game=window;
-		visualCards=new HashMap<String, JLabel>();
+		visualCards=new HashMap<String, File>();
 		cardDeck=new Deck();
-		playerCard1=new JLabel();
+		/*playerCard1=new JLabel();
 		playerCard2=new JLabel();
 		cmnCard1=new JLabel();
 		cmnCard2=new JLabel();
 		cmnCard3=new JLabel();
 		cmnCard4=new JLabel();
-		cmnCard5=new JLabel();
+		cmnCard5=new JLabel();*/
+		
 		bet= new JButton ();
 		fold= new JButton ();
 		
@@ -105,6 +116,8 @@ public class GamePanel extends JPanel {
 	
 	void setUpCall(){
 		callPot= new JLabel ("$"+" to call.");
+		Integer holder= game.pokerPlayer.amount;
+		callPot.setText (holder.toString());
 		Point callPt= new Point (725, 475);
 		callPot.setBounds(callPt.x,callPt.y, 50, 50);
 		add(callPot);
@@ -114,10 +127,10 @@ public class GamePanel extends JPanel {
 	void foldCards (){
 		game.pokerPlayer.setHand(null, null);
 		System.out.println ("Folding cards.....");
-		playerCard1.setVisible(false);
+		/*playerCard1.setVisible(false);
 		playerCard1.removeAll();
 		playerCard2.setVisible(false);
-		playerCard2.removeAll();
+		playerCard2.removeAll();*/
 	}
 	
 	void setMoney(){
@@ -168,9 +181,9 @@ public class GamePanel extends JPanel {
 			playerCard1=visualCards.get(firstCardKey);
 			
 			Point player1= new Point (400, 475);
-			playerCard1.setBounds(player1.x, player1.y, 65, 65);
+			/*playerCard1.setBounds(player1.x, player1.y, 65, 65);
 			
-			add (playerCard1);
+			add (playerCard1);*/
 		}
 		else {
 			return;
@@ -181,8 +194,8 @@ public class GamePanel extends JPanel {
 			playerCard2= visualCards.get(secondCardKey);
 			
 			Point player2=new Point (335, 475);
-			playerCard2.setBounds (player2.x, player2.y, 65, 65);
-			add (playerCard2);
+			/*playerCard2.setBounds (player2.x, player2.y, 65, 65);
+			add (playerCard2);*/
 		}
 
 		else {
@@ -197,17 +210,24 @@ public class GamePanel extends JPanel {
 	void setCommonCards (){
 		
 		ImageIcon hidden= new ImageIcon ("cardBack.jpg");
-		cmnCard1= new JLabel (hidden);
+	//	cmnCard1= new JLabel (hidden);
+		cmnCard1= new File ("cardBack.jpg");
 		Point ctrCard= new Point (250, 200);
-		cmnCard1.setBounds (ctrCard.x, ctrCard.y, 50, 50);
-		add (cmnCard1);
+		//cmnCard1.setBounds (ctrCard.x, ctrCard.y, 50, 50);
+		//add (cmnCard1);
 		
-		cmnCard2= new JLabel (hidden);
+		/*cmnCard2= new JLabel (hidden);
 		cmnCard2.setBounds (ctrCard.x+55, ctrCard.y, 50, 50);
 		cmnCard2.setVisible (false);
 		add (cmnCard2);
+		*/
 		
-		cmnCard3=new JLabel (hidden);
+		cmnCard2= new File ("cardBack.jpg");
+		cmnCard3=new File ("cardBack.jpg");
+		cmnCard4=new File ("cardBack.jpg");
+		cmnCard5= new File ("cardBack.jpg");
+		
+		/*cmnCard3=new JLabel (hidden);
 		cmnCard3.setBounds (ctrCard.x+110, ctrCard.y, 50, 50);
 		cmnCard3.setVisible (false);
 		add (cmnCard3);
@@ -222,7 +242,7 @@ public class GamePanel extends JPanel {
 		cmnCard5.setVisible (false);
 		
 		add (cmnCard4);
-		add (cmnCard5);
+		add (cmnCard5);*/
 	}
 
 	//everything face down at various positions
@@ -349,8 +369,8 @@ public class GamePanel extends JPanel {
 			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
-			cmnCard1.setIcon(visualCards.get(cmnCardKey).getIcon());
-			cmnCard1.setVisible(true);
+			/*cmnCard1.setIcon(visualCards.get(cmnCardKey).getIcon());
+			cmnCard1.setVisible(true);*/
 			game.pokerPlayer.commonCards.add(nextCommonCard);
 		}
 		
@@ -358,8 +378,8 @@ public class GamePanel extends JPanel {
 			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
-			cmnCard2.setIcon(visualCards.get(cmnCardKey).getIcon());
-			cmnCard2.setVisible(true);
+			/*cmnCard2.setIcon(visualCards.get(cmnCardKey).getIcon());
+			cmnCard2.setVisible(true);*/
 			game.pokerPlayer.commonCards.add(nextCommonCard);
 		}
 		
@@ -367,8 +387,8 @@ public class GamePanel extends JPanel {
 			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
-			cmnCard3.setIcon(visualCards.get(cmnCardKey).getIcon());
-			cmnCard3.setVisible(true);
+			/*cmnCard3.setIcon(visualCards.get(cmnCardKey).getIcon());
+			cmnCard3.setVisible(true);*/
 			game.pokerPlayer.commonCards.add(nextCommonCard);
 		}
 		
@@ -376,8 +396,8 @@ public class GamePanel extends JPanel {
 			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
-			cmnCard4.setIcon(visualCards.get(cmnCardKey).getIcon());
-			cmnCard4.setVisible(true);
+			/*cmnCard4.setIcon(visualCards.get(cmnCardKey).getIcon());
+			cmnCard4.setVisible(true);*/
 			game.pokerPlayer.commonCards.add(nextCommonCard);	
 		}
 		
@@ -385,8 +405,8 @@ public class GamePanel extends JPanel {
 			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
-			cmnCard5.setIcon(visualCards.get(cmnCardKey).getIcon());
-			cmnCard5.setVisible(true);
+			/*cmnCard5.setIcon(visualCards.get(cmnCardKey).getIcon());
+			cmnCard5.setVisible(true);*/
 			game.pokerPlayer.commonCards.add(nextCommonCard);
 			updateCardCount=0;
 		}
@@ -494,80 +514,106 @@ public class GamePanel extends JPanel {
 			if (key.contains("Ace")){
 				ImageIcon aD= new ImageIcon ("AClubs.png");
 				JLabel aceDiamond=new JLabel (aD);
-				visualCards.put(keys.get(i), aceDiamond);
+				//visualCards.put(keys.get(i), aceDiamond);
+				File aclubs= new File ("AClubs.png");
+				visualCards.put (keys.get(i),aclubs);
 			}
 
 			else if (key.contains ("2")){
 				ImageIcon twoD= new ImageIcon ("2Clubs.png");
 				JLabel twoDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i),twoDiamond);
+				//visualCards.put(keys.get(i),twoDiamond);
+				File twoClubs= new File ("2Clubs.png");
+				visualCards.put (keys.get(i),twoClubs);
 			}
 
 			else if (key.contains("3")){
 				ImageIcon threeD= new ImageIcon ("3Clubs.png");
 				JLabel threeDiamond=new JLabel (threeD);
-				visualCards.put(keys.get(i), threeDiamond);
-
+				//visualCards.put(keys.get(i), threeDiamond);
+				File threeClubs= new File ("3Clubs.png");
+				visualCards.put (keys.get(i), threeClubs);
 			}
 
 			else if (key.contains ("4")){
 				ImageIcon fourD= new ImageIcon ("4Clubs.png");
 				JLabel fourDiamond=new JLabel (fourD);
-				visualCards.put (keys.get(i),fourDiamond);
+				//visualCards.put (keys.get(i),fourDiamond);
+				File fourClubs= new File ("4Clubs.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains("5")){
 				ImageIcon fiveD= new ImageIcon ("5Clubs.png");
 				JLabel fiveDiamond=new JLabel (fiveD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("5Clubs.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("6")){
 				ImageIcon twoD= new ImageIcon ("6Clubs.png");
 				JLabel sixDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), sixDiamond);
+				//visualCards.put(keys.get(i), sixDiamond);
+				File fourClubs= new File ("6Clubs.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("7")){
 				ImageIcon twoD= new ImageIcon ("7Clubs.png");
 				JLabel sevenDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), sevenDiamond);
+				//visualCards.put(keys.get(i), sevenDiamond);
+				File fourClubs= new File ("7Clubs.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("8")){
 				ImageIcon twoD= new ImageIcon ("8Clubs.png");
 				JLabel eightDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), eightDiamond);
+				//visualCards.put(keys.get(i), eightDiamond);
+				File fourClubs= new File ("8Clubs.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("9")){
 				ImageIcon twoD= new ImageIcon ("9Clubs.png");
 				JLabel nineDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), nineDiamond);
+				//visualCards.put(keys.get(i), nineDiamond);
+				File fourClubs= new File ("9Clubs.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("10")){
 				ImageIcon twoD= new ImageIcon ("10Clubs.png");
 				JLabel fiveDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("10Clubs.png");
+				visualCards.put (keys.get(i), fourClubs);
+				//visualCards.put(keys.get(i), fiveDiamond);
 			}
 
 			else if (key.contains ("Jack")){
 				ImageIcon twoD= new ImageIcon ("JClubs.png");
 				JLabel fiveDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("JClubs.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 
 			else if (key.contains ("Queen")){
 				ImageIcon twoD= new ImageIcon ("QClubs.png");
 				JLabel fiveDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("QClubs.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains("King")){
 				ImageIcon twoD= new ImageIcon ("KClubs.png");
 				JLabel kingDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), kingDiamond);
+				//visualCards.put(keys.get(i), kingDiamond);
+				File fourClubs= new File ("KClubs.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 		}
 	}
@@ -581,80 +627,106 @@ public class GamePanel extends JPanel {
 			if (key.contains("Ace")){
 				ImageIcon aD= new ImageIcon ("ASpades.png");
 				JLabel aceDiamond=new JLabel (aD);
-				visualCards.put(keys.get(i), aceDiamond);
+				//visualCards.put(keys.get(i), aceDiamond);
+				File fourClubs= new File ("ASpades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("2")){
 				ImageIcon twoD= new ImageIcon ("2Spades.png");
 				JLabel twoDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i),twoDiamond);
+				//visualCards.put(keys.get(i),twoDiamond);
+				File fourClubs= new File ("2Spades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains("3")){
 				ImageIcon threeD= new ImageIcon ("3Spades.png");
 				JLabel threeDiamond=new JLabel (threeD);
-				visualCards.put(keys.get(i), threeDiamond);
-
+				//visualCards.put(keys.get(i), threeDiamond);
+				File fourClubs= new File ("3Spades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("4")){
 				ImageIcon fourD= new ImageIcon ("4Spades.png");
 				JLabel fourDiamond=new JLabel (fourD);
-				visualCards.put (keys.get(i),fourDiamond);
+				//visualCards.put (keys.get(i),fourDiamond);
+				File fourClubs= new File ("4Spades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains("5")){
 				ImageIcon fiveD= new ImageIcon ("5Spades.png");
 				JLabel fiveDiamond=new JLabel (fiveD);
-				visualCards.put(keys.get(i), fiveDiamond);
+			//	visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("5Spades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("6")){
 				ImageIcon twoD= new ImageIcon ("6Spades.png");
 				JLabel sixDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), sixDiamond);
+				//visualCards.put(keys.get(i), sixDiamond);
+				File fourClubs= new File ("6Spades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("7")){
 				ImageIcon twoD= new ImageIcon ("7Spades.png");
 				JLabel sevenDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), sevenDiamond);
+				//visualCards.put(keys.get(i), sevenDiamond);
+				File fourClubs= new File ("7Spades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("8")){
 				ImageIcon twoD= new ImageIcon ("8Spades.png");
 				JLabel eightDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), eightDiamond);
+				//visualCards.put(keys.get(i), eightDiamond);
+				File fourClubs= new File ("8Spades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("9")){
 				ImageIcon twoD= new ImageIcon ("9Spades.png");
 				JLabel nineDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), nineDiamond);
+				//visualCards.put(keys.get(i), nineDiamond);
+				File fourClubs= new File ("9Spades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("10")){
 				ImageIcon twoD= new ImageIcon ("10Spades.png");
 				JLabel fiveDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), fiveDiamond);
+			//	visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("10Spades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("Jack")){
 				ImageIcon twoD= new ImageIcon ("JSpades.png");
 				JLabel fiveDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("JSpades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("Queen")){
 				ImageIcon twoD= new ImageIcon ("QSpades.png");
 				JLabel fiveDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("QSpades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
+			
 
 			else if (key.contains("King")){
 				ImageIcon twoD= new ImageIcon ("KSpades.png");
 				JLabel kingDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), kingDiamond);
+				//visualCards.put(keys.get(i), kingDiamond);
+				File fourClubs= new File ("KSpades.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 		}
 	}
@@ -667,80 +739,118 @@ public class GamePanel extends JPanel {
 			if (key.contains("Ace")){
 				ImageIcon aD= new ImageIcon ("AHearts.png");
 				JLabel aceDiamond=new JLabel (aD);
-				visualCards.put(keys.get(i), aceDiamond);
+				//visualCards.put(keys.get(i), aceDiamond);
+				File fourClubs= new File ("AHearts.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("2")){
 				ImageIcon twoD= new ImageIcon ("2Hearts.png");
 				JLabel twoDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i),twoDiamond);
+				//visualCards.put(keys.get(i),twoDiamond);
+				File fourClubs= new File ("2Hearts.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 
 			else if (key.contains("3")){
 				ImageIcon threeD= new ImageIcon ("3Hearts.png");
 				JLabel threeDiamond=new JLabel (threeD);
-				visualCards.put(keys.get(i), threeDiamond);
+				//visualCards.put(keys.get(i), threeDiamond);	
+				File fourClubs= new File ("3Hearts.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 
 			}
 
 			else if (key.contains ("4")){
 				ImageIcon fourD= new ImageIcon ("4Hearts.png");
 				JLabel fourDiamond=new JLabel (fourD);
-				visualCards.put (keys.get(i),fourDiamond);
+				//visualCards.put (keys.get(i),fourDiamond);
+				File fourClubs= new File ("4Hearts.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 
 			else if (key.contains("5")){
 				ImageIcon fiveD= new ImageIcon ("5Hearts.png");
 				JLabel fiveDiamond=new JLabel (fiveD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("5Hearts.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 
 			else if (key.contains ("6")){
 				ImageIcon twoD= new ImageIcon ("6Hearts.png");
 				JLabel sixDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), sixDiamond);
+				//visualCards.put(keys.get(i), sixDiamond);
+				File fourClubs= new File ("6Hearts.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 
 			else if (key.contains ("7")){
 				ImageIcon twoD= new ImageIcon ("7Hearts.png");
 				JLabel sevenDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), sevenDiamond);
+				//visualCards.put(keys.get(i), sevenDiamond);
+				File fourClubs= new File ("7Hearts.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 
 			else if (key.contains ("8")){
 				ImageIcon twoD= new ImageIcon ("8Hearts.png");
 				JLabel eightDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), eightDiamond);
+				//visualCards.put(keys.get(i), eightDiamond);
+				File fourClubs= new File ("8Hearts.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 
 			else if (key.contains ("9")){
 				ImageIcon twoD= new ImageIcon ("9Hearts.png");
 				JLabel nineDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), nineDiamond);
+				//visualCards.put(keys.get(i), nineDiamond);
+				File fourClubs= new File ("9Hearts.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 
 			else if (key.contains ("10")){
 				ImageIcon twoD= new ImageIcon ("10Hearts.png");
 				JLabel fiveDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("10Hearts.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 
 			else if (key.contains ("Jack")){
 				ImageIcon twoD= new ImageIcon ("JHearts.png");
 				JLabel fiveDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("JHearts.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 
 			else if (key.contains ("Queen")){
 				ImageIcon twoD= new ImageIcon ("QHearts.png");
 				JLabel fiveDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("QHearts.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 
 			else if (key.contains("King")){
 				ImageIcon twoD= new ImageIcon ("KHearts.png");
 				JLabel kingDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), kingDiamond);
+				//visualCards.put(keys.get(i), kingDiamond);
+				File fourClubs= new File ("KHearts.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 		}
 	}
@@ -753,80 +863,108 @@ public class GamePanel extends JPanel {
 			if (key.contains("Ace")){
 				ImageIcon aD= new ImageIcon ("ADiamonds.png");
 				JLabel aceDiamond=new JLabel (aD);
-				visualCards.put(keys.get(i), aceDiamond);
+				//visualCards.put(keys.get(i), aceDiamond);
+				File fourClubs= new File ("ADiamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
+			
 			}
 
 			else if (key.contains ("2")){
 				ImageIcon twoD= new ImageIcon ("2Diamonds.png");
 				JLabel twoDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i),twoDiamond);
+				//visualCards.put(keys.get(i),twoDiamond);
+				File fourClubs= new File ("2Diamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains("3")){
 				ImageIcon threeD= new ImageIcon ("3Diamonds.png");
 				JLabel threeDiamond=new JLabel (threeD);
-				visualCards.put(keys.get(i), threeDiamond);
-
+				//visualCards.put(keys.get(i), threeDiamond);
+				File fourClubs= new File ("3Diamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("4")){
 				ImageIcon fourD= new ImageIcon ("4Diamonds.png");
 				JLabel fourDiamond=new JLabel (fourD);
-				visualCards.put (keys.get(i),fourDiamond);
+				//visualCards.put (keys.get(i),fourDiamond);
+				File fourClubs= new File ("4Diamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains("5")){
 				ImageIcon fiveD= new ImageIcon ("5Diamonds.png");
 				JLabel fiveDiamond=new JLabel (fiveD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("5Diamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("6")){
 				ImageIcon twoD= new ImageIcon ("6Diamonds.png");
 				JLabel sixDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), sixDiamond);
+				//visualCards.put(keys.get(i), sixDiamond);
+				File fourClubs= new File ("6Diamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("7")){
 				ImageIcon twoD= new ImageIcon ("7Diamonds.png");
 				JLabel sevenDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), sevenDiamond);
+				//visualCards.put(keys.get(i), sevenDiamond);
+				File fourClubs= new File ("7Diamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("8")){
 				ImageIcon twoD= new ImageIcon ("8Diamonds.png");
 				JLabel eightDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), eightDiamond);
+				//visualCards.put(keys.get(i), eightDiamond);
+				File fourClubs= new File ("8Diamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("9")){
 				ImageIcon twoD= new ImageIcon ("9Diamonds.png");
 				JLabel nineDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), nineDiamond);
+				//visualCards.put(keys.get(i), nineDiamond);
+				File fourClubs= new File ("9Diamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("10")){
 				ImageIcon twoD= new ImageIcon ("10Diamonds.png");
 				JLabel fiveDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("10Diamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("Jack")){
-				ImageIcon twoD= new ImageIcon ("JDiamonds.png");
-				JLabel fiveDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//File Jack= new File( "JDiamonds.png");
+				//ImageIcon twoD= new ImageIcon ("JDiamonds.png");
+				//JLabel fiveDiamond=new JLabel (twoD);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				
+				File fourClubs= new File ("JDiamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains ("Queen")){
 				ImageIcon twoD= new ImageIcon ("QDiamonds.png");
 				JLabel fiveDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), fiveDiamond);
+				//visualCards.put(keys.get(i), fiveDiamond);
+				File fourClubs= new File ("QDiamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 
 			else if (key.contains("King")){
 				ImageIcon twoD= new ImageIcon ("KDiamonds.png");
 				JLabel kingDiamond=new JLabel (twoD);
-				visualCards.put(keys.get(i), kingDiamond);
+				//visualCards.put(keys.get(i), kingDiamond);
+				File fourClubs= new File ("KDiamonds.png");
+				visualCards.put (keys.get(i), fourClubs);
 			}
 		}
 	}

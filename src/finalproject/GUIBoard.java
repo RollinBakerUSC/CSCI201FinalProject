@@ -152,7 +152,7 @@ public class GUIBoard extends JFrame {
 
 		public void actionPerformed (ActionEvent e){
 			gui.setVisible(false);
-			gui.dispose();
+			//gui.dispose();
 			gui= new GUIBoard();
 		}
 	}
