@@ -107,7 +107,7 @@ public class Player extends Thread{
 							String card2SuitString = cardParser.next();
 							Card c2 = getCardFromString(card2ValString, card2SuitString);
 							
-							board.gameBoard.setYourCards(c1, c2);//setHand(c1, c2);
+							setHand(c1, c2);//setHand(c1, c2);
 							System.out.println("Received hand in response to HAND command from server");
 							printHand();
 						}
@@ -224,23 +224,27 @@ public class Player extends Thread{
 								String card1ValString = cardParser.next();
 								String card1SuitString = cardParser.next();
 								Card c1 = getCardFromString(card1ValString, card1SuitString);
-								board.gameBoard.updateCommonCards(c1);
+								//board.gameBoard.updateCommonCards(c1);
+								commonCards.add(c1);
 							}
 							else if(numCards == 3){
 								String card1ValString = cardParser.next();
 								String card1SuitString = cardParser.next();
 								Card c1 = getCardFromString(card1ValString, card1SuitString);
-								board.gameBoard.updateCommonCards(c1);
+								//board.gameBoard.updateCommonCards(c1);
+								commonCards.add(c1);
 								
 								String card2ValString = cardParser.next();
 								String card2SuitString = cardParser.next();
 								Card c2 = getCardFromString(card2ValString, card2SuitString);
-								board.gameBoard.updateCommonCards(c2);
+								//board.gameBoard.updateCommonCards(c2);
+								commonCards.add(c2);
 								
 								String card3ValString = cardParser.next();
 								String card3SuitString = cardParser.next();
 								Card c3 = getCardFromString(card3ValString, card3SuitString);
-								board.gameBoard.updateCommonCards(c3);
+								//board.gameBoard.updateCommonCards(c3);
+								commonCards.add(c2);
 							}
 						}
 						//System.out.println(messageFromServer);
