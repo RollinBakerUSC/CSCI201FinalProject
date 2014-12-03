@@ -13,6 +13,8 @@ import java.util.Scanner;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.swing.JOptionPane;
+
 import finalproject.HandRank.HandType;
 
 
@@ -93,7 +95,15 @@ public class Player extends Thread{
 					//synchronized(serverCommands){
 						System.out.println("In " + name + "'s run function in synch trying to print " + messageFromServer);
 						//serverCommands.add(messageFromServer);
-						if(messageFromServer.contains("StartRound")){
+//						CHAT**
+						
+						if(messageFromServer.contains("CHAT: ")){
+							messageFromServer = messageFromServer.substring(6);
+							board.showMessage(messageFromServer);
+						}
+//						if(messageFromServer.contains("StartRound")){
+//						**CHAT
+						else if(messageFromServer.contains("StartRound")){
 							System.out.println("Round has started");
 						}
 						else if(messageFromServer.contains("Hand")){

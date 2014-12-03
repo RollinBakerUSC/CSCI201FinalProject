@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Scanner;
@@ -37,6 +38,12 @@ public class GUIBoard extends JFrame {
 	
 	//you have a player cause the GUIBoard is from the perspective of a player
 	Player pokerPlayer;
+//	CHAT**
+	public void showMessage(String s){
+		JOptionPane.showMessageDialog(null, s, "New Message!", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+//	**CHAT
 	public GUIBoard (){
 		super ("Can't Read My Poker Face");
 		setSize (800, 600);
@@ -67,6 +74,7 @@ public class GUIBoard extends JFrame {
 		JMenuBar menu= new JMenuBar();
 		JMenu game= new JMenu("Game");
 		JMenu acct= new JMenu("Account");
+		
 
 		JMenuItem newGame= new JMenuItem ("New Game");
 		newGame.addActionListener(new nextGameListen(this));
@@ -87,6 +95,25 @@ public class GUIBoard extends JFrame {
 
 		menu.add (game);
 		menu.add (acct);
+//		CHAT**
+			JMenu chat = new JMenu("Chat");
+			JMenuItem newChat = new JMenuItem("New Chat");
+			menu.add(chat);
+			chat.add(newChat);
+			newChat.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String msg = JOptionPane.showInputDialog(null, "", "New Message!", 1);
+					if(msg.compareTo("")!=0)
+						msg = "CHAT: "+msg;
+						pokerPlayer.pw.println(msg);
+						pokerPlayer.pw.flush();
+						System.out.println(msg);
+				}
+			});
+		
+//		**CHAT
+
 		pokerPlayer=new Player (name, 500, hostname, connectToPort, this);
 	
 		gameBoard=new GamePanel(null, this);

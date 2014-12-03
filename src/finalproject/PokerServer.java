@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.concurrent.BrokenBarrierException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -32,7 +33,16 @@ public class PokerServer extends Thread{
 	public static int winnerIndex;
 	public int winnerEarnings;
 	public static Vector<String> historyStrings = new Vector<String>();
-	
+//	CHAT**
+	public void broadcast(String s, ServerThread sender){
+//		System.out.println("BROADCAST: "+pokerPlayers.size());
+		for(ServerThread st : pokerPlayers){
+//			System.out.println("PS SENDING: "+s);
+			if(st!=sender)
+				st.send(s);
+		}
+	}
+//	**CHAT
 	public PokerServer(int port){
 		try{
 			ServerSocket ss = new ServerSocket(port);
@@ -52,6 +62,7 @@ public class PokerServer extends Thread{
 				Socket s=ss.accept();
 				System.out.println("Connection from" + s.getInetAddress());
 				ServerThread st = new ServerThread(s);
+				st.pokerServer = this;
 				//ChatThread ct=new ChatThread(s,st,st.br);
 				pokerPlayers.add(st);
 				//System.out.println("hi");
@@ -102,7 +113,7 @@ public class PokerServer extends Thread{
 				historyStrings.add(hs);
 				System.out.println(hs);
 			}
-			
+
 			for (String s : historyStrings) {
 				historyText = historyText + s + "\n";
 			}
@@ -115,17 +126,17 @@ public class PokerServer extends Thread{
 	}
 
 	// THIS FUNCTION WILL BE CALLED IN THE ACTION LISTENER IN GUI CODE
-//	public static void showHistoryPopup(){
-//		
-//		String historyText = "";
-//		for (String s : historyStrings) {
-//			historyText = historyText + s + "\n";
-//		}
-//		
-//		
-//		JOptionPane.showMessageDialog(null, historyText, "Game History", JOptionPane.INFORMATION_MESSAGE);
-//	}
-	
+	//	public static void showHistoryPopup(){
+	//		
+	//		String historyText = "";
+	//		for (String s : historyStrings) {
+	//			historyText = historyText + s + "\n";
+	//		}
+	//		
+	//		
+	//		JOptionPane.showMessageDialog(null, historyText, "Game History", JOptionPane.INFORMATION_MESSAGE);
+	//	}
+
 	public void run()
 	{
 		while(true)
@@ -284,7 +295,7 @@ public class PokerServer extends Thread{
 									winnerIndex = st.turnOrder;
 									winnerEarnings = PokerServer.MoneyPot/Winners.size();
 									insertData(winnerIndex, winnerEarnings);
-//									getData();
+									//									getData();
 									st.pw.println("Winner:"+(PokerServer.MoneyPot/Winners.size()));
 									st.pw.flush();
 								}
@@ -412,9 +423,10 @@ class ChatThread extends Thread
 	}
 }
 
- 
+
 class ServerThread extends Thread
 {
+	PokerServer pokerServer;
 	private Socket s;
 	public BufferedReader br;
 	public PrintWriter pw;
@@ -426,6 +438,13 @@ class ServerThread extends Thread
 	HandRank Rank;
 	int count;
 	public volatile boolean doneBet; //keeps track of if a person has finished betting
+//	CHAT**
+	public void send(String s){
+		System.out.println("SENDING: "+s);
+		pw.println(s);
+		pw.flush();
+	}
+//	**CHAT
 	public ServerThread(Socket s){
 		this.s=s;
 		inRound=false;
@@ -468,7 +487,6 @@ class ServerThread extends Thread
 			int test=0;
 			while(true)
 			{
-
 				if(tester==0)
 				{
 					//System.out.println(inRound);
@@ -522,23 +540,31 @@ class ServerThread extends Thread
 							doneBet=true;
 						}
 
-
+						System.out.println("DONEBET: "+doneBet);
 						//once its a players turn
 						if(doneBet==false)
 						{
 							String line = "Blah";
-							
-							while(!line.contains("Fold")&&!line.contains("Call:")&&!line.contains("Raise:")){
+							//							CHAT**
+							//							while(!line.contains("Fold")&&!line.contains("Call:")&&!line.contains("Raise:")){
+							while(!line.contains("Fold")&&!line.contains("Call:")&&!line.contains("Raise:")&&!line.contains("CHAT:")){
+								//								**CHAT
 								line=br.readLine();
-							
-							if(line.equals("Fold"))//user folded
-							{
-								PokerServer.part_Players.remove(this);
-								inRound=false;
-								amountBet=0;
-								inTurn=false;
+								System.out.println(line);
+								//								CHAT**
+								if(line.contains("CHAT:")){
+									this.pokerServer.broadcast(line, this);
+								}
+								//							if(line.equals("Fold"))//user folded
+								//								**CHAT
+								else if(line.equals("Fold"))//user folded
+								{
+									PokerServer.part_Players.remove(this);
+									inRound=false;
+									amountBet=0;
+									inTurn=false;
 
-								boolean found=false;/*
+									boolean found=false;/*
 							if(PokerServer.part_Players.size()==1)//if only one person left after fold
 							{
 
@@ -566,98 +592,98 @@ class ServerThread extends Thread
 								PokerServer.MoneyPot=0;
 								PokerServer.player_Hands.clear();
 							}*/
-								//if(PokerServer.part_Players.size()>1){
-								for(ServerThread st: PokerServer.pokerPlayers)//determining the next person betting
-								{
-									if(st.inRound==true&&st.turnOrder>turnOrder)
+									//if(PokerServer.part_Players.size()>1){
+									for(ServerThread st: PokerServer.pokerPlayers)//determining the next person betting
 									{
-										st.inTurn=true;
-										found=true;
-									}
-								}
-								if(found==false)
-								{
-									for(ServerThread st: PokerServer.pokerPlayers)
-									{
-										if(st.inRound==true)
+										if(st.inRound==true&&st.turnOrder>turnOrder)
 										{
 											st.inTurn=true;
-
+											found=true;
 										}
 									}
-								}
-								//		}
-							}
-							else if (line.contains("Raise:"))//reads in a bet and updates the public pot 
-							{
-
-								inTurn=false;
-								int betAmount=Integer.parseInt(line.substring(6,line.length()));
-								PokerServer.MoneyPot=PokerServer.MoneyPot+betAmount;
-								amountBet=amountBet+betAmount;
-								PokerServer.maxBet=amountBet;
-
-								boolean found=false;
-								synchronized(PokerServer.part_Players)
-								{
-									for(ServerThread st: PokerServer.part_Players)//update all players to have to continue matching the raise
+									if(found==false)
 									{
-										if(st!=this)
+										for(ServerThread st: PokerServer.pokerPlayers)
 										{
-											st.doneBet=false;
-										}
-									}
-								}
-								doneBet=true;
-								for(ServerThread st: PokerServer.pokerPlayers)//determining the next person betting
-								{
-									if(st.inRound==true&&st.turnOrder>turnOrder)
-									{
-										st.inTurn=true;
-										found=true;
-									}
-								}
-								if(found==false)
-								{
-									for(ServerThread st: PokerServer.pokerPlayers)
-									{
-										if(st.inRound==true)
-										{
-											st.inTurn=true;
+											if(st.inRound==true)
+											{
+												st.inTurn=true;
 
+											}
 										}
 									}
+									//		}
 								}
-							}	
-							else if (line.contains("Call:"))
-							{
-								System.out.println("in call");
-								doneBet=true;
-								inTurn=false;
-								int betAmount=Integer.parseInt(line.substring(5,line.length()));
-								PokerServer.MoneyPot=PokerServer.MoneyPot + betAmount;
-								amountBet=amountBet+betAmount;
-								boolean found=false;
-								for(ServerThread st: PokerServer.pokerPlayers)//determining the next person betting
+								else if (line.contains("Raise:"))//reads in a bet and updates the public pot 
 								{
-									if(st.inRound==true&&st.turnOrder>turnOrder)
+
+									inTurn=false;
+									int betAmount=Integer.parseInt(line.substring(6,line.length()));
+									PokerServer.MoneyPot=PokerServer.MoneyPot+betAmount;
+									amountBet=amountBet+betAmount;
+									PokerServer.maxBet=amountBet;
+
+									boolean found=false;
+									synchronized(PokerServer.part_Players)
 									{
-										st.inTurn=true;
-										found=true;
+										for(ServerThread st: PokerServer.part_Players)//update all players to have to continue matching the raise
+										{
+											if(st!=this)
+											{
+												st.doneBet=false;
+											}
+										}
 									}
-								}
-								if(found==false)
-								{
-									for(ServerThread st: PokerServer.pokerPlayers)
+									doneBet=true;
+									for(ServerThread st: PokerServer.pokerPlayers)//determining the next person betting
 									{
-										if(st.inRound==true&&st!=this)
+										if(st.inRound==true&&st.turnOrder>turnOrder)
 										{
 											st.inTurn=true;
+											found=true;
+										}
+									}
+									if(found==false)
+									{
+										for(ServerThread st: PokerServer.pokerPlayers)
+										{
+											if(st.inRound==true)
+											{
+												st.inTurn=true;
 
+											}
+										}
+									}
+								}	
+								else if (line.contains("Call:"))
+								{
+									System.out.println("in call");
+									doneBet=true;
+									inTurn=false;
+									int betAmount=Integer.parseInt(line.substring(5,line.length()));
+									PokerServer.MoneyPot=PokerServer.MoneyPot + betAmount;
+									amountBet=amountBet+betAmount;
+									boolean found=false;
+									for(ServerThread st: PokerServer.pokerPlayers)//determining the next person betting
+									{
+										if(st.inRound==true&&st.turnOrder>turnOrder)
+										{
+											st.inTurn=true;
+											found=true;
+										}
+									}
+									if(found==false)
+									{
+										for(ServerThread st: PokerServer.pokerPlayers)
+										{
+											if(st.inRound==true&&st!=this)
+											{
+												st.inTurn=true;
+
+											}
 										}
 									}
 								}
-							}
 							}
 						}
 					}
