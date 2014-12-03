@@ -50,292 +50,92 @@ public class GamePanel extends JPanel {
 	JLabel [] playerCards;
 	JLabel [] availCards;
 	 */
-/*	JLabel playerCard1;
+	JLabel playerCard1;
 	JLabel playerCard2;
 	JLabel cmnCard1;
 	JLabel cmnCard2;
 	JLabel cmnCard3;
 	JLabel cmnCard4;
-	JLabel cmnCard5;*/
-	File playerCard1;
+	JLabel cmnCard5;
+	JLabel hiddenRep1;
+	JLabel hiddenRep2;
+	JLabel hiddenRep3;
+	JLabel hiddenRep4;
+	JLabel hiddenRep5;
+	JLabel hiddenRep6;
+	JLabel hiddenRep7;
+	JLabel hiddenRep8;
+	JLabel hiddenRep9;
+	JLabel hiddenRep10;
+	JLabel hiddenRep11;
+	JLabel hiddenRep12;
+	JLabel hiddenRep13;
+	JLabel hiddenRep14;
+	/*File playerCard1;
 	File playerCard2;
 	File cmnCard1;
 	File cmnCard2;
 	File cmnCard3;
 	File cmnCard4;
-	File cmnCard5;
-	
+	File cmnCard5;*/
+
 	JLabel money;
 	JLabel callPot;
-	
+
 	JButton bet;
 	JButton fold;
-	static int updateCardCount=0;
+	int updateCardCount=0;
 	static int playerCount=0;
 	public GamePanel (LayoutManager layout, GUIBoard window){
-		
+
 		super (layout);
 		//manage=layout;
-		
+
 		game=window;
 		visualCards=new HashMap<String, File>();
 		cardDeck=new Deck();
-		/*playerCard1=new JLabel();
+		playerCard1=new JLabel();
 		playerCard2=new JLabel();
-		cmnCard1=new JLabel();
+		/*	cmnCard1=new JLabel();
 		cmnCard2=new JLabel();
 		cmnCard3=new JLabel();
 		cmnCard4=new JLabel();
 		cmnCard5=new JLabel();*/
-		
+		Point player1= new Point (400, 475);
+		Point player2=new Point (335, 475);
+		playerCard1.setBounds(player1.x, player1.y, 65, 65);
+		playerCard2.setBounds (player2.x, player2.y, 65, 65);
+		add (playerCard2);
+		add (playerCard1);
 		bet= new JButton ();
 		fold= new JButton ();
 		
-		
-		visualCardsSetUp();
-
-		System.out.println (visualCards.keySet().size());
-
-		//you want to assign all the cards then repopulate the deck
-		cardDeck=new Deck();
-		cardDeck.shuffle();
-		
-		setButtons();
-		setMoney();
-		setUpCall();
-		//setOtherPlayerCards();
-		//setYourCards();
-		//setCommonCards();
-		setTable();
-		
-		System.out.println ("Updating card....turn 1");
-		//updateCommonCards();
-	}
-
-	//what needs to happen?
-	//figure out a way to get the winners
-
-	public Deck getDeck(){
-		return cardDeck;
-	}
-	
-	void setUpCall(){
-		callPot= new JLabel ("$"+" to call.");
-		Integer holder= game.pokerPlayer.amount;
-		callPot.setText (holder.toString());
-		Point callPt= new Point (725, 475);
-		callPot.setBounds(callPt.x,callPt.y, 50, 50);
+		callPot= new JLabel();
+		Point callPt= new Point (715, 475);
+		callPot.setBounds(callPt.x,callPt.y, 75, 50);
 		add(callPot);
-	}
-	
-	//this will take away your cards 
-	void foldCards (){
-		game.pokerPlayer.setHand(null, null);
-		System.out.println ("Folding cards.....");
-		/*playerCard1.setVisible(false);
-		playerCard1.removeAll();
-		playerCard2.setVisible(false);
-		playerCard2.removeAll();*/
-	}
-	
-	void setMoney(){
-		String labelTemp= game.pokerPlayer.getMoney().toString();
-		money= new JLabel ("$"+labelTemp);
 		
-		Point moneyPt= new Point (725, 500);
+		money=new JLabel();
+		Point moneyPt= new Point (735, 500);
 		money.setBounds(moneyPt.x, moneyPt.y, 50, 50);
-		
 		add (money);
-	}
-	
-	void setButtons(){
-		bet= new JButton ("Bet");
-		bet.addActionListener (new betListen(game));
-		
-		Point betState= new Point (610, 490);
-		bet.setBounds (betState.x, betState.y, 100, 25);
-		add (bet);
-		
-		Point foldState= new Point (610, 520);
-		fold= new JButton ("Fold");
-		fold.addActionListener(new foldListen(game));
-		fold.setBounds(foldState.x, foldState.y, 100, 25);
-		add (fold);
-	}
-
-	void setTable(){
-	
-		ImageIcon tablePic= new ImageIcon ("pokerTable.jpg");
-		JLabel pokerTable=new JLabel (tablePic);
-		Point tableState= new Point (-10, 0);
-		pokerTable.setBounds(tableState.x, tableState.y, 805, 600);
-		
-		add (pokerTable);
-	}
-	
-	//this is going to set your cards (cards in the bottom center)
-	void setYourCards (Card firstCard, Card secondCard){
-		//firstCard= cardDeck.deal();
-		//secondCard= cardDeck.deal();
-		game.pokerPlayer.setHand (firstCard, secondCard);
-		String firstCardKey=firstCard.getSuitAsString()+firstCard.getValueAsString();
-		String secondCardKey=secondCard.getSuitAsString()+secondCard.getValueAsString();
-		
-		if (visualCards.containsKey(firstCardKey)){
-			System.out.println ("Card one exists!");	
-			playerCard1=visualCards.get(firstCardKey);
-			
-			Point player1= new Point (400, 475);
-			try {
-				Image cardImage = ImageIO.read(playerCard1);
-				BufferedImage cImage = toBufferedImage(cardImage);
-				Graphics2D g2d = (Graphics2D)this.getGraphics();
-				g2d.drawImage(cardImage, player1.x, player1.y, 65, 65, null);
-				this.repaint();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			
-			/*playerCard1.setBounds(player1.x, player1.y, 65, 65);
-			
-			add (playerCard1);*/
-		}
-		else {
-			return;
-		}
-
-		if (visualCards.containsKey(secondCardKey)){
-			System.out.println ("Card two exists!");	
-			playerCard2= visualCards.get(secondCardKey);
-			
-			Point player2=new Point (335, 475);
-			try {
-				Image cardImage = ImageIO.read(playerCard2);
-				BufferedImage cImage = toBufferedImage(cardImage);
-				Graphics2D g2d = (Graphics2D)this.getGraphics();
-				g2d.drawImage(cardImage, player2.x, player2.y, 65, 65, null);
-				this.repaint();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			/*playerCard2.setBounds (player2.x, player2.y, 65, 65);
-			add (playerCard2);*/
-		}
-
-		else {
-			return;
-		}
-
-	}
-
-	//this is going to set the cards for the common game 
-	//initially all face down
-	//what happens when you start a new game
-	void setCommonCards (){
 		
 		ImageIcon hidden= new ImageIcon ("cardBack.jpg");
-	//	cmnCard1= new JLabel (hidden);
-		cmnCard1= new File ("cardBack.jpg");
-		Point ctrCard= new Point (250, 200);
-		//cmnCard1.setBounds (ctrCard.x, ctrCard.y, 50, 50);
-		//add (cmnCard1);
-		
-		/*cmnCard2= new JLabel (hidden);
-		cmnCard2.setBounds (ctrCard.x+55, ctrCard.y, 50, 50);
-		cmnCard2.setVisible (false);
-		add (cmnCard2);
-		*/
-		
-		cmnCard2= new File ("cardBack.jpg");
-		cmnCard3=new File ("cardBack.jpg");
-		cmnCard4=new File ("cardBack.jpg");
-		cmnCard5= new File ("cardBack.jpg");
-		
-		/*cmnCard3=new JLabel (hidden);
-		cmnCard3.setBounds (ctrCard.x+110, ctrCard.y, 50, 50);
-		cmnCard3.setVisible (false);
-		add (cmnCard3);
-		
-		cmnCard4= new JLabel (hidden);
-		cmnCard4.setBounds (ctrCard.x+165, ctrCard.y, 50, 50);
-		
-		cmnCard5=new JLabel (hidden);
-		cmnCard5.setBounds (ctrCard.x+220, ctrCard.y, 50, 50);
-		
-		cmnCard4.setVisible (false);
-		cmnCard5.setVisible (false);
-		
-		add (cmnCard4);
-		add (cmnCard5);*/
-	}
 
-	//everything face down at various positions
-	//call this whenever someone new joins
-	void setOtherPlayerCards(){
-		playerCount++;
-		ImageIcon hidden= new ImageIcon ("cardBack.jpg");
-		
-		JLabel hiddenRep1= new JLabel (hidden);
-		JLabel hiddenRep2= new JLabel (hidden);
-		JLabel hiddenRep3= new JLabel (hidden);
-		JLabel hiddenRep4= new JLabel (hidden);
-		JLabel hiddenRep5= new JLabel (hidden);
-		JLabel hiddenRep6= new JLabel (hidden);
-		JLabel hiddenRep7= new JLabel (hidden);
-		JLabel hiddenRep8= new JLabel (hidden);
-		JLabel hiddenRep9= new JLabel (hidden);
-		JLabel hiddenRep10= new JLabel (hidden);
-		JLabel hiddenRep11= new JLabel (hidden);
-		JLabel hiddenRep12= new JLabel (hidden);
-		JLabel hiddenRep13= new JLabel (hidden);
-		JLabel hiddenRep14= new JLabel (hidden);
-		
-		Point card1= new Point (30, 170);
-		hiddenRep1.setBounds (card1.x, card1.y, 50, 50);
-		add (hiddenRep1);
-		
-		hiddenRep2.setBounds(card1.x, card1.y+55, 50, 50);
-		add (hiddenRep2);
-		
-		hiddenRep3.setBounds (hiddenRep2.getX()+35, hiddenRep2.getY()+60, 50, 50);
-		add (hiddenRep3);
-		
-		hiddenRep4.setBounds (hiddenRep3.getX()+55, hiddenRep3.getY()+30, 50, 50);
-		add (hiddenRep4);
-		
-		hiddenRep5.setBounds (hiddenRep4.getX()+70, hiddenRep4.getY()+35, 50, 50);
-		add (hiddenRep5);
-		
-		hiddenRep6.setBounds (hiddenRep5.getX()+55, hiddenRep5.getY()+15, 50, 50);
-		add (hiddenRep6);
-		
-		hiddenRep7.setBounds (hiddenRep6.getX()+245, hiddenRep6.getY()+5, 50, 50);
-		add (hiddenRep7);
-		
-		hiddenRep8.setBounds(hiddenRep7.getX()+55, hiddenRep7.getY()+5, 50, 50);
-		add (hiddenRep8);
-		
-		hiddenRep9.setBounds (hiddenRep8.getX()+95, hiddenRep8.getY()-45, 50, 50);
-		add (hiddenRep9);
-		
-		hiddenRep10.setBounds (hiddenRep9.getX()+55, hiddenRep9.getY()-30, 50, 50);
-		add (hiddenRep10);
-		
-		hiddenRep11.setBounds(hiddenRep10.getX()+15, hiddenRep10.getY()-85, 50, 50);
-		add (hiddenRep11);
-		
-		hiddenRep12.setBounds (hiddenRep11.getX(), hiddenRep11.getY()-5, 50, 50);
-		add (hiddenRep12);
-		
-		hiddenRep13.setBounds (hiddenRep12.getX(), hiddenRep12.getY()-55, 50, 50);
-		add (hiddenRep13);
-		
-		hiddenRep14.setBounds(hiddenRep10.getX(), hiddenRep13.getY()-75, 50, 50);
-		add (hiddenRep14);
-		
+		 hiddenRep1= new JLabel (hidden);
+		 hiddenRep2= new JLabel (hidden);
+		 hiddenRep3= new JLabel (hidden);
+		 hiddenRep4= new JLabel (hidden);
+		 hiddenRep5= new JLabel (hidden);
+		 hiddenRep6= new JLabel (hidden);
+		 hiddenRep7= new JLabel (hidden);
+		 hiddenRep8= new JLabel (hidden);
+		 hiddenRep9= new JLabel (hidden);
+		 hiddenRep10= new JLabel (hidden);
+		 hiddenRep11= new JLabel (hidden);
+		 hiddenRep12= new JLabel (hidden);
+		 hiddenRep13= new JLabel (hidden);
+		 hiddenRep14= new JLabel (hidden);
 		hiddenRep1.setVisible (false);
 		hiddenRep2.setVisible (false);
 		hiddenRep3.setVisible (false);
@@ -350,40 +150,335 @@ public class GamePanel extends JPanel {
 		hiddenRep12.setVisible (false);
 		hiddenRep13.setVisible (false);
 		hiddenRep14.setVisible (false);
+		Point card1= new Point (30, 170);
+		hiddenRep1.setBounds (card1.x, card1.y, 50, 50);
+		add (hiddenRep1);
+
+		hiddenRep2.setBounds(card1.x, card1.y+55, 50, 50);
+		add (hiddenRep2);
+
+		hiddenRep3.setBounds (hiddenRep2.getX()+35, hiddenRep2.getY()+60, 50, 50);
+		add (hiddenRep3);
+
+		hiddenRep4.setBounds (hiddenRep3.getX()+55, hiddenRep3.getY()+30, 50, 50);
+		add (hiddenRep4);
+
+		hiddenRep5.setBounds (hiddenRep4.getX()+70, hiddenRep4.getY()+35, 50, 50);
+		add (hiddenRep5);
+
+		hiddenRep6.setBounds (hiddenRep5.getX()+55, hiddenRep5.getY()+15, 50, 50);
+		add (hiddenRep6);
+
+		hiddenRep7.setBounds (hiddenRep6.getX()+245, hiddenRep6.getY()+5, 50, 50);
+		add (hiddenRep7);
+
+		hiddenRep8.setBounds(hiddenRep7.getX()+55, hiddenRep7.getY()+5, 50, 50);
+		add (hiddenRep8);
+
+		hiddenRep9.setBounds (hiddenRep8.getX()+95, hiddenRep8.getY()-45, 50, 50);
+		add (hiddenRep9);
+
+		hiddenRep10.setBounds (hiddenRep9.getX()+55, hiddenRep9.getY()-30, 50, 50);
+		add (hiddenRep10);
+
+		hiddenRep11.setBounds(hiddenRep10.getX()+15, hiddenRep10.getY()-85, 50, 50);
+		add (hiddenRep11);
+
+		hiddenRep12.setBounds (hiddenRep11.getX(), hiddenRep11.getY()-5, 50, 50);
+		add (hiddenRep12);
+
+		hiddenRep13.setBounds (hiddenRep12.getX(), hiddenRep12.getY()-55, 50, 50);
+		add (hiddenRep13);
+
+		hiddenRep14.setBounds(hiddenRep10.getX(), hiddenRep13.getY()-75, 50, 50);
+		add (hiddenRep14);
 		
-		if (playerCount==1){
-			hiddenRep1.setVisible(true);
-			hiddenRep2.setVisible(true);
+		
+		visualCardsSetUp();
+
+		System.out.println (visualCards.keySet().size());
+
+		//you want to assign all the cards then repopulate the deck
+		cardDeck=new Deck();
+		cardDeck.shuffle();
+
+		setButtons();
+	//	setOtherPlayerCards();
+		//setYourCards();
+		setCommonCards();
+		setTable();
+
+		
+
+	
+		System.out.println ("Updating card....turn 1");
+		//updateCommonCards();
+	}
+
+	//what needs to happen?
+	//figure out a way to get the winners
+
+	public Deck getDeck(){
+		return cardDeck;
+	}
+	
+	void disableButtons(){
+		bet.setEnabled(false);
+		fold.setEnabled(false);
+	}
+	
+	void enableButtons(){
+		bet.setEnabled (true);
+		fold.setEnabled(true);
+	}
+
+	void setUpCall(int amount){
+		//callPot= new JLabel ("$"+" to call.");
+		Integer holder= amount;
+		callPot.setText ("Call: " + "$ "+holder.toString());
+		callPot.setVisible (true);
+		callPot.updateUI();
+	}
+	
+	void disappearCall (){
+		callPot.setVisible(false);
+		callPot.updateUI();
+	}
+
+	//this will take away your cards 
+	void foldCards (){
+		//game.pokerPlayer.setHand(null, null);
+		System.out.println ("Folding cards.....");
+		synchronized(playerCard1)
+		{
+
+			synchronized(playerCard2)
+			{
+				disappearCall();
+				playerCard1.setVisible(false);
+
+				//playerCard1.removeAll();
+
+				playerCard2.setVisible(false);
+			}
 		}
+		//playerCard2.removeAll();
+	}
+
+	void setMoney(String money1){
+		//	String labelTemp= game.pokerPlayer.getMoney().toString();
+		String labelTemp=money1;
+		System.out.println ("Label temp is: "+money1);
+		//money= new JLabel ("$"+labelTemp);
+		money.setText ("$"+labelTemp);
+		money.updateUI();
+		System.out.println (money.getText());
 		
+		money.setVisible(true);
+	}
+
+	void setButtons(){
+		bet= new JButton ("Bet");
+		bet.addActionListener (new betListen(game));
+
+		Point betState= new Point (610, 490);
+		bet.setBounds (betState.x, betState.y, 100, 25);
+		add (bet);
+
+		Point foldState= new Point (610, 520);
+		fold= new JButton ("Fold");
+		fold.addActionListener(new foldListen(game));
+		fold.setBounds(foldState.x, foldState.y, 100, 25);
+		add (fold);
+	}
+
+	void setTable(){
+
+		ImageIcon tablePic= new ImageIcon ("pokerTable.jpg");
+		JLabel pokerTable=new JLabel (tablePic);
+		Point tableState= new Point (-10, 0);
+		pokerTable.setBounds(tableState.x, tableState.y, 805, 600);
+
+		add (pokerTable);
+	}
+
+	//this is going to set your cards (cards in the bottom center)
+	void setYourCards (Card firstCard, Card secondCard){
+		//firstCard= cardDeck.deal();
+		//secondCard= cardDeck.deal();
+		//game.pokerPlayer.setHand (firstCard, secondCard);
+		String firstCardKey=firstCard.getSuitAsString()+firstCard.getValueAsString();
+		String secondCardKey=secondCard.getSuitAsString()+secondCard.getValueAsString();
+		System.out.println(firstCardKey + " " + secondCardKey);
+		if (visualCards.containsKey(firstCardKey)){
+			System.out.println ("Card one exists!");	
+			File pc1=visualCards.get(firstCardKey);
+			//System.out.println(playerCard1);
+
+			//try {
+			ImageIcon cardImage = new ImageIcon(pc1.getAbsolutePath());
+			playerCard1.setIcon(cardImage);
+			playerCard1.setVisible(true);
+			playerCard1.updateUI();
+			System.out.println(playerCard1.isVisible());
+			//BufferedImage cImage = toBufferedImage(cardImage);
+
+			//Graphics2D g2d = (Graphics2D)this.getGraphics();
+			//			//g2d.drawImage(cardImage, player1.x, player1.y, 65, 65, null);
+			//		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			//		e.printStackTrace();
+			//}
+
+
+
+		}
+		else {
+			return;
+		}
+
+		if (visualCards.containsKey(secondCardKey)){
+			System.out.println ("Card two exists!");	
+			File pc2= visualCards.get(secondCardKey);
+
+
+			//try {
+			ImageIcon cardImage = new ImageIcon(pc2.getAbsolutePath());
+			playerCard2.setIcon(cardImage);
+			playerCard2.setVisible(true);
+			playerCard2.updateUI();
+			//BufferedImage cImage = toBufferedImage(cardImage);
+			//Graphics2D g2d = (Graphics2D)this.getGraphics();
+			//g2d.drawImage(cardImage, player2.x, player2.y, 65, 65, null);
+			//this.repaint();
+			//} catch (IOException e) {
+			/// TODO Auto-generated catch block
+			//e.printStackTrace();
+			//}
+
+		}
+
+		else {
+			return;
+		}
+
+	}
+
+void clearCommonCards(){
+	updateCardCount=0;
+	cmnCard1.setVisible(false);
+	cmnCard1.updateUI();
+	cmnCard2.setVisible(false);
+	cmnCard2.updateUI();
+	cmnCard3.setVisible(false);
+	cmnCard3.updateUI();
+	cmnCard4.setVisible(false);
+	cmnCard4.updateUI();
+	cmnCard5.setVisible(false);
+	cmnCard5.updateUI();
+}
+	//this is going to set the cards for the common game 
+	//initially all face down
+	//what happens when you start a new game
+	void setCommonCards (){
+
+		//ImageIcon hidden= new ImageIcon ("cardBack.jpg");
+		cmnCard1= new JLabel ();
+		//	cmnCard1= new File ("cardBack.jpg");
+		Point ctrCard= new Point (250, 200);
+		cmnCard1.setBounds (ctrCard.x, ctrCard.y, 50, 50);
+		cmnCard1.setVisible(false);
+		add (cmnCard1);
+
+		cmnCard2= new JLabel ();
+		cmnCard2.setBounds (ctrCard.x+55, ctrCard.y, 50, 50);
+		cmnCard2.setVisible (false);
+		add (cmnCard2);
+
+		//cmnCard2= new File ("cardBack.jpg");
+		//cmnCard3=new File ("cardBack.jpg");
+		//cmnCard4=new File ("cardBack.jpg");
+		//cmnCard5= new File ("cardBack.jpg");
+
+		cmnCard3=new JLabel ();
+		cmnCard3.setBounds (ctrCard.x+110, ctrCard.y, 50, 50);
+		cmnCard3.setVisible (false);
+		add (cmnCard3);
+
+		cmnCard4= new JLabel ();
+		cmnCard4.setBounds (ctrCard.x+165, ctrCard.y, 50, 50);
+
+		cmnCard5=new JLabel ();
+		cmnCard5.setBounds (ctrCard.x+220, ctrCard.y, 50, 50);
+
+		cmnCard4.setVisible (false);
+		cmnCard5.setVisible (false);
+
+		add (cmnCard4);
+		add (cmnCard5);
+	}
+
+	//everything face down at various positions
+	//call this whenever someone new joins
+	void clearPlayerCount()
+	{
+		playerCount=0;
+	}
+	void setOtherPlayerCards(){
+		playerCount++;
+		System.out.println("in setOtherPlayerCards()");
+		ImageIcon hidden= new ImageIcon ("cardBack.jpg");
+		if (playerCount==1){
+			hiddenRep1.setIcon (hidden);
+			hiddenRep2.setIcon (hidden);
+			hiddenRep1.setVisible(true);
+			
+			hiddenRep1.updateUI();
+			hiddenRep2.setVisible(true);
+			hiddenRep2.updateUI();
+			System.out.println("in setOtherPlayerCards()");
+		}
+
 		else if (playerCount==2){
 			hiddenRep3.setVisible(true);
+			hiddenRep3.updateUI();
 			hiddenRep4.setVisible(true);
+			hiddenRep4.updateUI();
 		}
-		
+
 		else if (playerCount==3){
 			hiddenRep5.setVisible(true);
+			hiddenRep5.updateUI();
 			hiddenRep6.setVisible(true);
+			hiddenRep6.updateUI();
 		}
-		
+
 		else if (playerCount==4){
 			hiddenRep7.setVisible(true);
+			hiddenRep7.updateUI();
 			hiddenRep8.setVisible(true);
+			hiddenRep8.updateUI();
 		}
-		
+
 		else if (playerCount==5){
 			hiddenRep9.setVisible(true);
+			hiddenRep9.updateUI();
 			hiddenRep10.setVisible(true);
+			hiddenRep10.updateUI();
 		}
-		
+
 		else if (playerCount==6){
 			hiddenRep11.setVisible(true);
+			hiddenRep11.updateUI();
 			hiddenRep12.setVisible(true);
+			hiddenRep12.updateUI();
 		}
-		
+
 		else if (playerCount==7){
 			hiddenRep13.setVisible(true);
+			hiddenRep13.updateUI();
 			hiddenRep14.setVisible(true);
+			hiddenRep14.updateUI();
 		}
 	}
 
@@ -391,53 +486,59 @@ public class GamePanel extends JPanel {
 	//call this anytime a turn finishes
 	void updateCommonCards(Card nextCommonCard){
 		updateCardCount++;
-				
+
 		if (updateCardCount==1){
 			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
-			/*cmnCard1.setIcon(visualCards.get(cmnCardKey).getIcon());
-			cmnCard1.setVisible(true);*/
-			game.pokerPlayer.commonCards.add(nextCommonCard);
+			ImageIcon cmn1Icon=new ImageIcon(visualCards.get(cmnCardKey).getAbsolutePath());
+			cmnCard1.setIcon(cmn1Icon);
+			cmnCard1.setVisible(true);
+			cmnCard1.updateUI();
+			//game.pokerPlayer.commonCards.add(nextCommonCard);
 		}
-		
+
 		if (updateCardCount==2){
 			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
-			/*cmnCard2.setIcon(visualCards.get(cmnCardKey).getIcon());
-			cmnCard2.setVisible(true);*/
-			game.pokerPlayer.commonCards.add(nextCommonCard);
+			ImageIcon cmn2Icon=new ImageIcon(visualCards.get(cmnCardKey).getAbsolutePath());
+			cmnCard2.setIcon(cmn2Icon);
+			cmnCard2.setVisible(true);
+			cmnCard2.updateUI();
 		}
-		
+
 		if (updateCardCount==3){
 			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
-			/*cmnCard3.setIcon(visualCards.get(cmnCardKey).getIcon());
-			cmnCard3.setVisible(true);*/
-			game.pokerPlayer.commonCards.add(nextCommonCard);
+			ImageIcon cmn1Icon=new ImageIcon(visualCards.get(cmnCardKey).getAbsolutePath());
+			cmnCard3.setIcon(cmn1Icon);
+			cmnCard3.setVisible(true);
+			cmnCard3.updateUI();
 		}
-		
+
 		if (updateCardCount==4){
 			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
-			/*cmnCard4.setIcon(visualCards.get(cmnCardKey).getIcon());
-			cmnCard4.setVisible(true);*/
-			game.pokerPlayer.commonCards.add(nextCommonCard);	
+			ImageIcon cmn1Icon=new ImageIcon(visualCards.get(cmnCardKey).getAbsolutePath());
+			cmnCard4.setIcon(cmn1Icon);
+			cmnCard4.setVisible(true);
+			cmnCard4.updateUI();
 		}
-		
+
 		if (updateCardCount==5){
 			//Card nextCommonCard= cardDeck.deal();
 			String cmnCardKey= nextCommonCard.getSuitAsString()+nextCommonCard.getValueAsString();
 			System.out.println (cmnCardKey);
-			/*cmnCard5.setIcon(visualCards.get(cmnCardKey).getIcon());
-			cmnCard5.setVisible(true);*/
-			game.pokerPlayer.commonCards.add(nextCommonCard);
+			ImageIcon cmn1Icon=new ImageIcon(visualCards.get(cmnCardKey).getAbsolutePath());
+			cmnCard5.setIcon(cmn1Icon);
+			cmnCard5.setVisible(true);
+			cmnCard5.updateUI();
 			updateCardCount=0;
 		}
-		
+
 	}
 
 	//this is going to setup the hashmap of Card to JLabel
@@ -624,7 +725,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i), fiveDiamond);
 				File fourClubs= new File ("JClubs.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 
 			else if (key.contains ("Queen")){
@@ -686,7 +787,7 @@ public class GamePanel extends JPanel {
 			else if (key.contains("5")){
 				ImageIcon fiveD= new ImageIcon ("5Spades.png");
 				JLabel fiveDiamond=new JLabel (fiveD);
-			//	visualCards.put(keys.get(i), fiveDiamond);
+				//	visualCards.put(keys.get(i), fiveDiamond);
 				File fourClubs= new File ("5Spades.png");
 				visualCards.put (keys.get(i), fourClubs);
 			}
@@ -726,7 +827,7 @@ public class GamePanel extends JPanel {
 			else if (key.contains ("10")){
 				ImageIcon twoD= new ImageIcon ("10Spades.png");
 				JLabel fiveDiamond=new JLabel (twoD);
-			//	visualCards.put(keys.get(i), fiveDiamond);
+				//	visualCards.put(keys.get(i), fiveDiamond);
 				File fourClubs= new File ("10Spades.png");
 				visualCards.put (keys.get(i), fourClubs);
 			}
@@ -746,7 +847,7 @@ public class GamePanel extends JPanel {
 				File fourClubs= new File ("QSpades.png");
 				visualCards.put (keys.get(i), fourClubs);
 			}
-			
+
 
 			else if (key.contains("King")){
 				ImageIcon twoD= new ImageIcon ("KSpades.png");
@@ -777,7 +878,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i),twoDiamond);
 				File fourClubs= new File ("2Hearts.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 
 			else if (key.contains("3")){
@@ -786,7 +887,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i), threeDiamond);	
 				File fourClubs= new File ("3Hearts.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 
 			}
 
@@ -796,7 +897,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put (keys.get(i),fourDiamond);
 				File fourClubs= new File ("4Hearts.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 
 			else if (key.contains("5")){
@@ -805,7 +906,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i), fiveDiamond);
 				File fourClubs= new File ("5Hearts.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 
 			else if (key.contains ("6")){
@@ -814,7 +915,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i), sixDiamond);
 				File fourClubs= new File ("6Hearts.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 
 			else if (key.contains ("7")){
@@ -823,7 +924,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i), sevenDiamond);
 				File fourClubs= new File ("7Hearts.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 
 			else if (key.contains ("8")){
@@ -832,7 +933,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i), eightDiamond);
 				File fourClubs= new File ("8Hearts.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 
 			else if (key.contains ("9")){
@@ -841,7 +942,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i), nineDiamond);
 				File fourClubs= new File ("9Hearts.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 
 			else if (key.contains ("10")){
@@ -850,7 +951,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i), fiveDiamond);
 				File fourClubs= new File ("10Hearts.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 
 			else if (key.contains ("Jack")){
@@ -859,7 +960,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i), fiveDiamond);
 				File fourClubs= new File ("JHearts.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 
 			else if (key.contains ("Queen")){
@@ -868,7 +969,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i), fiveDiamond);
 				File fourClubs= new File ("QHearts.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 
 			else if (key.contains("King")){
@@ -877,7 +978,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i), kingDiamond);
 				File fourClubs= new File ("KHearts.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 		}
 	}
@@ -893,7 +994,7 @@ public class GamePanel extends JPanel {
 				//visualCards.put(keys.get(i), aceDiamond);
 				File fourClubs= new File ("ADiamonds.png");
 				visualCards.put (keys.get(i), fourClubs);
-			
+
 			}
 
 			else if (key.contains ("2")){
@@ -973,7 +1074,7 @@ public class GamePanel extends JPanel {
 				//ImageIcon twoD= new ImageIcon ("JDiamonds.png");
 				//JLabel fiveDiamond=new JLabel (twoD);
 				//visualCards.put(keys.get(i), fiveDiamond);
-				
+
 				File fourClubs= new File ("JDiamonds.png");
 				visualCards.put (keys.get(i), fourClubs);
 			}
@@ -995,7 +1096,7 @@ public class GamePanel extends JPanel {
 			}
 		}
 	}
-	
+
 	class betListen implements ActionListener {
 		//send out some message this is happening
 		GUIBoard gui;
@@ -1016,23 +1117,26 @@ public class GamePanel extends JPanel {
 				if (bet>gui.pokerPlayer.getMoney()){
 					JOptionPane.showMessageDialog(gui, "Insufficient Funds.");
 				}
-				
+
 				if (bet<0){
 					JOptionPane.showMessageDialog (gui, " Invalid Bet Amount.");
 				}
 
 				else{
+					disableButtons();
 					gui.pokerPlayer.setBet(bet);
-					
+
 					money.setText("$"+gui.pokerPlayer.getMoney().toString());
-					synchronized(this){
-						this.notify();
+					disappearCall();
+					//changed from this.notify to this.gui.gameBoard.notify
+					synchronized(this.gui.gameBoard){
+						this.gui.gameBoard.notify();
 					}
 				}
 			}
 
 			catch (Exception ef){
-				JOptionPane.showMessageDialog (gui,"Invalid Bet Amount.");
+				JOptionPane.showMessageDialog (gui,"Number Only");
 			}
 		}
 	}
@@ -1044,34 +1148,43 @@ public class GamePanel extends JPanel {
 		}
 		//what'll this do? you want to get rid of the cards
 		public void actionPerformed (ActionEvent e){
-		
+
 			foldCards();
+			disableButtons();
+			clearCommonCards();
 			this.gui.pokerPlayer.foldCards();
-			synchronized(this.gui.gameBoard){
-				this.gui.gameBoard.notify();
+			try {
+				synchronized(this.gui.gameBoard){
+					this.gui.gameBoard.notify();
+				}
+			}
+
+			catch (IllegalMonitorStateException iem){
+				System.out.println ("FUUUUUU");
+				JOptionPane.showMessageDialog (gui,"Thread Exception>");
 			}
 			//send out some message
 		}
 	}
 	public static BufferedImage toBufferedImage(Image img)
 	{
-	    if (img instanceof BufferedImage)
-	    {
-	        return (BufferedImage) img;
-	    }
+		if (img instanceof BufferedImage)
+		{
+			return (BufferedImage) img;
+		}
 
-	    // Create a buffered image with transparency
-	    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+		// Create a buffered image with transparency
+		BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
-	    // Draw the image on to the buffered image
-	    Graphics2D bGr = bimage.createGraphics();
-	    bGr.drawImage(img, 0, 0, null);
-	    bGr.dispose();
+		// Draw the image on to the buffered image
+		Graphics2D bGr = bimage.createGraphics();
+		bGr.drawImage(img, 0, 0, null);
+		bGr.dispose();
 
-	    // Return the buffered image
-	    return bimage;
+		// Return the buffered image
+		return bimage;
 	}
-	
+
 }
 
 

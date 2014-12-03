@@ -64,7 +64,8 @@ public class Player extends Thread{
 		bufferAccess = new ReentrantLock();
 		messageReceived = bufferAccess.newCondition();
 		serverCommands = Collections.synchronizedList(new ArrayList<String>());
-		
+		this.board.gameBoard.setMoney(Integer.toString(money));
+		this.board.gameBoard.setUpCall(amount);
 		Socket s;
 		try {
 			s = new Socket(hostname, port);
@@ -79,6 +80,9 @@ public class Player extends Thread{
 		}
 		this.name = name;
 		this.money = money;
+		Integer tempMoney=new Integer (money);
+		board.gameBoard.setMoney (tempMoney.toString());
+		board.gameBoard.setUpCall (0);
 		this.commonCards = new ArrayList<Card>();
 		this.start();
 	}
@@ -107,6 +111,13 @@ public class Player extends Thread{
 							System.out.println("Round has started");
 						}
 						else if(messageFromServer.contains("Hand")){
+							try{
+								sleep(2000);
+							}
+							catch(InterruptedException ie)
+							{
+								System.out.println("interrupted during deal");
+							}
 							String cards = messageFromServer.substring(messageFromServer.indexOf(':')+1);
 							Scanner cardParser = new Scanner(cards);
 							String card1ValString = cardParser.next();
@@ -122,6 +133,7 @@ public class Player extends Thread{
 							printHand();
 						}
 						else if(messageFromServer.contains("Done")){
+							board.gameBoard.clearCommonCards();
 							getBest5CardHand();
 							HandRank hr = getHandRank();
 							int handType;
@@ -168,6 +180,7 @@ public class Player extends Thread{
 									+ " " + hr.fifthHighCard;
 							pw.println(handRankString);
 							pw.flush();
+							
 						}
 						//serverCommands.remove(0);
 						else if(messageFromServer.contains("Turn:")){
@@ -175,6 +188,8 @@ public class Player extends Thread{
 							//TODO: In GUI, activate buttons
 							String amountString = messageFromServer.substring(messageFromServer.indexOf(':')+1);
 							amount = Integer.parseInt(amountString);
+							this.board.gameBoard.setUpCall (amount);
+							this.board.gameBoard.enableButtons();
 							//Scanner userInput = new Scanner(System.in);
 							//System.out.println("What do you want to do? Amount to call is " + amount);
 							//String playerResponse = userInput.nextLine();
@@ -215,16 +230,35 @@ public class Player extends Thread{
 							String amountString = messageFromServer.substring(messageFromServer.indexOf(':')+1);
 							int amount = Integer.parseInt(amountString);
 							money += amount;
+							
+							Integer temp= new Integer (money);
+							this.board.gameBoard.setMoney (temp.toString());
 							this.commonCards.clear();
 							this.pocketCards = null;
 							this.moneyBetThisRound = 0;
+							JOptionPane.showMessageDialog (this.board, "Winner Winner, Chicken Dinner!");
+							
 						}
 						else if(messageFromServer.contains("Loser")){
 							this.commonCards.clear();
 							this.pocketCards = null;
 							this.moneyBetThisRound = 0;
+							JOptionPane.showMessageDialog (this.board, "Ha, You Lost.");
+							
+						}
+						else if (messageFromServer.contains("Players"))
+						{
+							System.out.println("im at the players statement");
+							board.gameBoard.clearPlayerCount();
+							String temp=messageFromServer;
+							int numPlayers=Integer.parseInt(temp.substring(8,temp.length()));
+							for(int i= 0; i<numPlayers;i++ )
+							{
+								board.gameBoard.setOtherPlayerCards();
+							}
 						}
 						else if(messageFromServer.contains("Deal")){
+							
 							String temp = new String(messageFromServer);
 							int numCards = getFirstIntFromString(temp);
 							String cards = messageFromServer.substring(messageFromServer.indexOf(':')+1);
@@ -234,30 +268,30 @@ public class Player extends Thread{
 								String card1ValString = cardParser.next();
 								String card1SuitString = cardParser.next();
 								Card c1 = getCardFromString(card1ValString, card1SuitString);
-								//board.gameBoard.updateCommonCards(c1);
+								board.gameBoard.updateCommonCards(c1);
 								commonCards.add(c1);
 							}
 							else if(numCards == 3){
 								String card1ValString = cardParser.next();
 								String card1SuitString = cardParser.next();
 								Card c1 = getCardFromString(card1ValString, card1SuitString);
-								//board.gameBoard.updateCommonCards(c1);
+								board.gameBoard.updateCommonCards(c1);
 								commonCards.add(c1);
 								
 								String card2ValString = cardParser.next();
 								String card2SuitString = cardParser.next();
 								Card c2 = getCardFromString(card2ValString, card2SuitString);
-								//board.gameBoard.updateCommonCards(c2);
+								board.gameBoard.updateCommonCards(c2);
 								commonCards.add(c2);
 								
 								String card3ValString = cardParser.next();
 								String card3SuitString = cardParser.next();
 								Card c3 = getCardFromString(card3ValString, card3SuitString);
-								//board.gameBoard.updateCommonCards(c3);
+								board.gameBoard.updateCommonCards(c3);
 								commonCards.add(c2);
 							}
 						}
-						//System.out.println(messageFromServer);
+						System.out.println(messageFromServer);
 						//serverCommands.notify();
 					}
 					
@@ -279,6 +313,7 @@ public class Player extends Thread{
 		pocketCards = new Card[2];
 		pocketCards[0] = c1;
 		pocketCards[1] = c2;
+		board.gameBoard.setYourCards(pocketCards[0],pocketCards[1]);
 	}
 	
 	public void printHand(){
@@ -370,8 +405,10 @@ public class Player extends Thread{
 			pw.println("Raise:" + betAmount);
 		}
 		pw.flush();
-		this.money=this.money-(betAmount - moneyBetThisRound);
+		this.money=this.money-(betAmount);
 		moneyBetThisRound = betAmount + moneyBetThisRound;
+		Integer tempMoney= new Integer (this.money);
+		board.gameBoard.setMoney (tempMoney.toString());
 	}
 
 	void foldCards(){

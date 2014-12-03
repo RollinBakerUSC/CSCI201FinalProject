@@ -36,10 +36,13 @@ public class PokerServer extends Thread{
 //	CHAT**
 	public void broadcast(String s, ServerThread sender){
 //		System.out.println("BROADCAST: "+pokerPlayers.size());
-		for(ServerThread st : pokerPlayers){
+		synchronized(PokerServer.pokerPlayers)
+		{
+		for(ServerThread st : PokerServer.pokerPlayers){
 //			System.out.println("PS SENDING: "+s);
 			if(st!=sender)
 				st.send(s);
+		}
 		}
 	}
 //	**CHAT
@@ -144,6 +147,8 @@ public class PokerServer extends Thread{
 			if (PokerServer.pokerPlayers.size()>1)//handling starting rounds and "activating" players
 			{
 				boolean round=false;
+				synchronized(PokerServer.pokerPlayers)
+				{
 				for(ServerThread st : PokerServer.pokerPlayers)
 				{
 					if(st.inRound==true)
@@ -151,16 +156,25 @@ public class PokerServer extends Thread{
 						round=true;
 					}
 				}
+				}
 				if(round==false)//no one is in a round, meaning either round has ended or game hasn't started
 				{
 					System.out.println("Starting a new game");
+					synchronized(PokerServer.pokerPlayers)
+					{
 					for(ServerThread st : PokerServer.pokerPlayers)//starts round, hands out cards
 					{
 
 
 
-
-
+						
+						try{
+							sleep(1000);
+						}
+						catch(InterruptedException ie)
+						{
+							System.out.println("ie exception when sending Players:");
+						}
 						PokerServer.part_Players.add(st);//adds client to the vector of participating players for a round
 
 
@@ -169,12 +183,15 @@ public class PokerServer extends Thread{
 						//st.pw.println(card1String);
 						Card card2=PokerDeck.deal();
 						String card2String=card2.getValueAsString()+" " +card2.getSuitAsString();
+						st.pw.println("Players:"+(PokerServer.pokerPlayers.size()-1));
+						st.pw.flush();
 						st.pw.println("Hand:"+card1String + " "+card2String);
 						st.pw.flush();
 						st.pw.println("StartRound");//sends signal to a client to start a new round
 						st.pw.flush();
 						st.inRound=true;
 						st.doneBet=false;
+					}
 					}
 					/*	for(ServerThread st : PokerServer.part_Players)
 					{
@@ -319,6 +336,7 @@ public class PokerServer extends Thread{
 						String card3String=null;
 						if(PokerServer.rounds==2)//3 cards
 						{
+							System.out.println("sending 3 cards");
 							Card card1=PokerDeck.deal();//hands out cards
 							card1String=card1.getValueAsString()+" "+card1.getSuitAsString();
 							//st.pw.println(card1String);

@@ -67,15 +67,12 @@ public class GUIBoard extends JFrame {
 			connectToPort=1500;
 		}
 		
-		
-		
 		//pretty self explanatory stuff here, make a menubar then menus
 		//add to the menus
 		JMenuBar menu= new JMenuBar();
 		JMenu game= new JMenu("Game");
 		JMenu acct= new JMenu("Account");
 		
-
 		JMenuItem newGame= new JMenuItem ("New Game");
 		newGame.addActionListener(new nextGameListen(this));
 
@@ -113,15 +110,14 @@ public class GUIBoard extends JFrame {
 			});
 		
 //		**CHAT
-
+			gameBoard=new GamePanel(null, this);
 		pokerPlayer=new Player (name, 500, hostname, connectToPort, this);
 	
-		gameBoard=new GamePanel(null, this);
+		
 		//gameBoard.add (money);
 		add (gameBoard);
 		setJMenuBar (menu);
 		setVisible(true);
-
 		
 	}
 
