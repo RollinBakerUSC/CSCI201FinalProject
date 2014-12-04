@@ -82,7 +82,7 @@ public class GUIBoard extends JFrame {
 		/*JMenuItem export= new JMenuItem ("Export Data");
 		export.addActionListener (new exportListen());
 */
-		JMenuItem stats= new JMenuItem ("Statistics");
+		JMenuItem stats= new JMenuItem ("Game History");
 		stats.addActionListener (new statsListen(this));
 
 		//acct.add (export);
@@ -207,6 +207,7 @@ public class GUIBoard extends JFrame {
 		
 		public void actionPerformed (ActionEvent e){
 			//PokerServer.showHistoryPopup();
+			JOptionPane.showMessageDialog(null, pokerPlayer.historyText, "Game History", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 

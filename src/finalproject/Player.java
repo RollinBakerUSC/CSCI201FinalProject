@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -33,6 +34,7 @@ public class Player extends Thread{
 	private ReentrantLock bufferAccess;
 	private Condition messageReceived;
 	private GUIBoard board;
+	String historyText;
 	
 	public Player(String name, String hostname, int port, GUIBoard board){
 		this.board = board;
@@ -227,10 +229,19 @@ public class Player extends Thread{
 //							
 						}
 						else if(messageFromServer.contains("Winner")){
-							String amountString = messageFromServer.substring(messageFromServer.indexOf(':')+1);
+							String amountString = messageFromServer.substring(messageFromServer.indexOf(':')+1, messageFromServer.indexOf('@'));
 							int amount = Integer.parseInt(amountString);
 							money += amount;
-							
+							String intermediate = messageFromServer.substring(messageFromServer.indexOf('@')+1);
+							historyText = intermediate.replaceAll("\\*\\*\\*", "\n");
+//							StringTokenizer tokenizer = new StringTokenizer(intermediate, "@@@###@@@");
+//							historyText = "";
+//							while(tokenizer.hasMoreTokens()){
+//								String tokStr = tokenizer.nextToken();
+//								if(tokStr.length()!=0)
+//									historyText+=tokStr+"\n";
+//							}
+							System.out.println(historyText);
 							Integer temp= new Integer (money);
 							this.board.gameBoard.setMoney (temp.toString());
 							this.commonCards.clear();
@@ -240,6 +251,9 @@ public class Player extends Thread{
 							
 						}
 						else if(messageFromServer.contains("Loser")){
+							String intermediate = messageFromServer.substring(messageFromServer.indexOf('@')+1);
+							historyText = intermediate.replaceAll("\\*\\*\\*", "\n");
+							System.out.println(historyText);
 							this.commonCards.clear();
 							this.pocketCards = null;
 							this.moneyBetThisRound = 0;

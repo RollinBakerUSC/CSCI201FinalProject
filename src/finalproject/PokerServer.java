@@ -33,19 +33,19 @@ public class PokerServer extends Thread{
 	public static int winnerIndex;
 	public int winnerEarnings;
 	public static Vector<String> historyStrings = new Vector<String>();
-//	CHAT**
+	//	CHAT**
 	public void broadcast(String s, ServerThread sender){
-//		System.out.println("BROADCAST: "+pokerPlayers.size());
-		synchronized(PokerServer.pokerPlayers)
-		{
-		for(ServerThread st : PokerServer.pokerPlayers){
-//			System.out.println("PS SENDING: "+s);
-			if(st!=sender)
-				st.send(s);
-		}
-		}
+		//		System.out.println("BROADCAST: "+pokerPlayers.size());
+//		synchronized(PokerServer.pokerPlayers)
+//		{
+			for(ServerThread st : PokerServer.pokerPlayers){
+				//			System.out.println("PS SENDING: "+s);
+				if(st!=sender)
+					st.send(s);
+			}
+//		}
 	}
-//	**CHAT
+	//	**CHAT
 	public PokerServer(int port){
 		try{
 			ServerSocket ss = new ServerSocket(port);
@@ -86,7 +86,7 @@ public class PokerServer extends Thread{
 		Connection conn;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/final_project", "root", null);
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/final_project", "root", "csci201lab");
 			String query = "INSERT INTO winners (winner_player_id, winnings) VALUES (?,?)";
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setString(1, ""+player_id);
@@ -105,7 +105,7 @@ public class PokerServer extends Thread{
 		String historyText = "";
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/final_project", "root", null);
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/final_project", "root", "csci201lab");
 			String query = "SELECT * from winners";
 			Statement stmt = conn.createStatement();	
 			ResultSet rs = stmt.executeQuery(query);
@@ -118,7 +118,7 @@ public class PokerServer extends Thread{
 			}
 
 			for (String s : historyStrings) {
-				historyText = historyText + s + "\n";
+				historyText = historyText + s + "***";
 			}
 			System.out.println(historyText);
 		} catch (Exception e) {
@@ -149,49 +149,49 @@ public class PokerServer extends Thread{
 				boolean round=false;
 				synchronized(PokerServer.pokerPlayers)
 				{
-				for(ServerThread st : PokerServer.pokerPlayers)
-				{
-					if(st.inRound==true)
+					for(ServerThread st : PokerServer.pokerPlayers)
 					{
-						round=true;
+						if(st.inRound==true)
+						{
+							round=true;
+						}
 					}
-				}
 				}
 				if(round==false)//no one is in a round, meaning either round has ended or game hasn't started
 				{
 					System.out.println("Starting a new game");
 					synchronized(PokerServer.pokerPlayers)
 					{
-					for(ServerThread st : PokerServer.pokerPlayers)//starts round, hands out cards
-					{
-
-
-
-						
-						try{
-							sleep(1000);
-						}
-						catch(InterruptedException ie)
+						for(ServerThread st : PokerServer.pokerPlayers)//starts round, hands out cards
 						{
-							System.out.println("ie exception when sending Players:");
+
+
+
+
+							try{
+								sleep(1000);
+							}
+							catch(InterruptedException ie)
+							{
+								System.out.println("ie exception when sending Players:");
+							}
+							PokerServer.part_Players.add(st);//adds client to the vector of participating players for a round
+
+
+							Card card1=PokerDeck.deal();//hands out cards
+							String card1String=card1.getValueAsString()+ " " +card1.getSuitAsString();
+							//st.pw.println(card1String);
+							Card card2=PokerDeck.deal();
+							String card2String=card2.getValueAsString()+" " +card2.getSuitAsString();
+							st.pw.println("Players:"+(PokerServer.pokerPlayers.size()-1));
+							st.pw.flush();
+							st.pw.println("Hand:"+card1String + " "+card2String);
+							st.pw.flush();
+							st.pw.println("StartRound");//sends signal to a client to start a new round
+							st.pw.flush();
+							st.inRound=true;
+							st.doneBet=false;
 						}
-						PokerServer.part_Players.add(st);//adds client to the vector of participating players for a round
-
-
-						Card card1=PokerDeck.deal();//hands out cards
-						String card1String=card1.getValueAsString()+ " " +card1.getSuitAsString();
-						//st.pw.println(card1String);
-						Card card2=PokerDeck.deal();
-						String card2String=card2.getValueAsString()+" " +card2.getSuitAsString();
-						st.pw.println("Players:"+(PokerServer.pokerPlayers.size()-1));
-						st.pw.flush();
-						st.pw.println("Hand:"+card1String + " "+card2String);
-						st.pw.flush();
-						st.pw.println("StartRound");//sends signal to a client to start a new round
-						st.pw.flush();
-						st.inRound=true;
-						st.doneBet=false;
-					}
 					}
 					/*	for(ServerThread st : PokerServer.part_Players)
 					{
@@ -305,6 +305,7 @@ public class PokerServer extends Thread{
 
 						synchronized(PokerServer.part_Players)
 						{
+							//insert data first
 							for(ServerThread st:PokerServer.part_Players)
 							{
 								if(st.Rank.equals(Winners.get(0)))
@@ -312,13 +313,40 @@ public class PokerServer extends Thread{
 									winnerIndex = st.turnOrder;
 									winnerEarnings = PokerServer.MoneyPot/Winners.size();
 									insertData(winnerIndex, winnerEarnings);
-									//									getData();
-									st.pw.println("Winner:"+(PokerServer.MoneyPot/Winners.size()));
+//									String sqlData = getData();
+//									String sendString = "Winner:"+(PokerServer.MoneyPot/Winners.size())+"@"+sqlData;
+//									System.out.println("start sendString\n"+sendString+"\nendsendstring");
+//									st.pw.println(sendString);
+//									st.pw.flush();
+								}
+//								else
+//								{
+//									String sqlData = getData();
+//									String sendString = "Loser@"+sqlData;
+//									System.out.println("start sendString\n"+sendString+"\nendsendstring");
+//									st.pw.println(sendString);
+//									st.pw.flush();
+//								}
+							}
+//							now send data
+							String sqlData = getData();
+							for(ServerThread st:PokerServer.part_Players)
+							{
+								if(st.Rank.equals(Winners.get(0)))
+								{
+//									winnerIndex = st.turnOrder;
+//									winnerEarnings = PokerServer.MoneyPot/Winners.size();
+//									insertData(winnerIndex, winnerEarnings);
+									String sendString = "Winner:"+(PokerServer.MoneyPot/Winners.size())+"@"+sqlData;
+									System.out.println("start sendString\n"+sendString+"\nendsendstring");
+									st.pw.println(sendString);
 									st.pw.flush();
 								}
 								else
 								{
-									st.pw.println("Loser");
+									String sendString = "Loser@"+sqlData;
+									System.out.println("start sendString\n"+sendString+"\nendsendstring");
+									st.pw.println(sendString);
 									st.pw.flush();
 								}
 
@@ -456,13 +484,13 @@ class ServerThread extends Thread
 	HandRank Rank;
 	int count;
 	public volatile boolean doneBet; //keeps track of if a person has finished betting
-//	CHAT**
+	//	CHAT**
 	public void send(String s){
 		System.out.println("SENDING: "+s);
 		pw.println(s);
 		pw.flush();
 	}
-//	**CHAT
+	//	**CHAT
 	public ServerThread(Socket s){
 		this.s=s;
 		inRound=false;
@@ -565,7 +593,7 @@ class ServerThread extends Thread
 							String line = "Blah";
 							//							CHAT**
 							//							while(!line.contains("Fold")&&!line.contains("Call:")&&!line.contains("Raise:")){
-							while(!line.contains("Fold")&&!line.contains("Call:")&&!line.contains("Raise:")&&!line.contains("CHAT:")){
+							while(!line.contains("Fold")&&!line.contains("Call:")&&!line.contains("Raise:")&&!line.contains("CHAT:") && line != null){
 								//								**CHAT
 								line=br.readLine();
 								System.out.println(line);
